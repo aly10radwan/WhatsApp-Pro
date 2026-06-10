@@ -41,11 +41,11 @@
         }
 
         /* ----------------------------------------- */
-        /* الجانب الأيمن: القائمة الجانبية (الأشخاص المحفوظين) */
+        /* الجانب الأيمن: القائمة الجانبية */
         /* ----------------------------------------- */
         .side-panel {
             width: 35%;
-            min-width: 300px;
+            min-width: 320px;
             max-width: 400px;
             border-left: 1px solid var(--wa-border);
             display: flex;
@@ -83,14 +83,30 @@
             font-size: 1.2em;
             cursor: pointer;
             outline: none;
-            margin-right: 10px;
+            margin-right: 8px;
         }
 
-        .chat-list-title {
-            padding: 15px 16px 5px 16px;
-            color: var(--wa-green);
+        .tabs-menu {
+            display: flex;
+            background-color: var(--wa-panel-bg);
+            border-bottom: 1px solid var(--wa-border);
+        }
+
+        .tab-item-btn {
+            flex: 1;
+            padding: 12px;
+            background: none;
+            border: none;
+            color: var(--wa-text-sub);
+            cursor: pointer;
             font-size: 0.9em;
-            font-weight: bold;
+            text-align: center;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-item-btn.active {
+            color: var(--wa-green);
+            border-bottom: 3px solid var(--wa-green);
         }
 
         .chat-list {
@@ -107,7 +123,7 @@
             border-bottom: 1px solid rgba(34, 46, 53, 0.4);
         }
 
-        .chat-item:hover {
+        .chat-item:hover, .chat-item.active {
             background-color: var(--wa-header-bg);
         }
 
@@ -131,6 +147,12 @@
             overflow: hidden;
         }
 
+        .chat-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         .chat-title-row h3 {
             margin: 0;
             font-size: 0.95em;
@@ -140,10 +162,21 @@
         .chat-preview {
             font-size: 0.85em;
             color: var(--wa-text-sub);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .badge {
+            background-color: #ea0038;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.75em;
         }
 
         /* ----------------------------------------- */
-        /* الجانب الأيسر الكبيير: الأدوات والادوات والقرى */
+        /* الجانب الأيسر الكبيير */
         /* ----------------------------------------- */
         .main-view {
             flex: 1;
@@ -155,7 +188,6 @@
             height: 100%;
         }
 
-        /* شاشة الأدوات الرئيسية في البداية */
         .tool-screen {
             width: 100%;
             max-width: 500px;
@@ -186,7 +218,7 @@
             margin-bottom: 8px;
         }
 
-        .phone-input-container {
+        .input-with-button {
             display: flex;
             align-items: center;
             background-color: var(--wa-input-bg);
@@ -195,12 +227,12 @@
             border: 1px solid var(--wa-border);
         }
 
-        .phone-prefix {
-            color: var(--wa-text-sub);
-            font-size: 1em;
-            padding-left: 8px;
-            border-left: 1px solid var(--wa-border);
-            user-select: none;
+        .input-with-button button {
+            background: none;
+            border: none;
+            font-size: 1.3em;
+            cursor: pointer;
+            padding: 0 5px;
         }
 
         input, textarea, select {
@@ -215,237 +247,11 @@
             box-sizing: border-box;
         }
 
-        .phone-input-container input {
+        .input-with-button input {
             border: none;
             background: none;
             padding: 12px 8px;
         }
 
-        textarea {
-            resize: none;
-            height: 80px;
-        }
-
         .action-btn {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--wa-green);
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            font-size: 1em;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 8px;
-        }
-
-        .action-btn:hover {
-            background-color: #008f72;
-        }
-
-        /* شاشات الإعدادات الفرعية */
-        .content-panel {
-            width: 100%;
-            height: 100%;
-            background-color: #1f2c34;
-            display: none;
-            flex-direction: column;
-        }
-
-        .panel-header {
-            background-color: var(--wa-header-bg);
-            height: 60px;
-            padding: 0 24px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            font-size: 1.1em;
-            font-weight: bold;
-        }
-
-        .back-arrow {
-            background: none;
-            border: none;
-            color: var(--wa-text-main);
-            font-size: 1.4em;
-            cursor: pointer;
-            outline: none;
-        }
-
-        .panel-body {
-            flex: 1;
-            padding: 25px 40px;
-            overflow-y: auto;
-        }
-
-        .info-card {
-            background-color: var(--wa-panel-bg);
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="app-window">
-        
-        <div class="side-panel">
-            <div class="side-header">
-                <div class="user-avatar">ع</div>
-                <div class="header-icons">
-                    <button onclick="showPanel('add-person-panel')" title="إضافة شخص جديد">👤➕</button>
-                    <button onclick="showPanel('settings-panel')" title="الإعدادات">⚙️</button>
-                </div>
-            </div>
-            
-            <div class="chat-list-title">الأشخاص وحفظ الأرقام السريعة</div>
-            <div class="chat-list" id="saved-contacts-list">
-                <div class="chat-item" style="cursor: default; opacity: 0.6;">
-                    <div class="chat-avatar">📱</div>
-                    <div class="chat-info">
-                        <div class="chat-title-row"><h3>لا يوجد أشخاص مضافين</h3></div>
-                        <span class="chat-preview">اضغط على أيقونة الإضافة فوق لحفظ رقم سريع...</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="main-view" id="main-view-bg">
-            
-            <div class="tool-screen" id="main-tool-screen">
-                <h2>بدء دردشة سريعة 💬</h2>
-                
-                <div class="form-group">
-                    <label>أدخل رقم الهاتف (رقم الموبايل المصري بدون 002 أو +):</label>
-                    <div class="phone-input-container">
-                        <span class="phone-prefix">+20</span>
-                        <input type="text" id="quick-phone" placeholder="مثال: 1012345678">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>نص الرسالة (اختياري):</label>
-                    <textarea id="quick-message" placeholder="اكتب رسالتك الافتتاحية هنا..."></textarea>
-                </div>
-
-                <button class="action-btn" onclick="openQuickChat()">فتح الشات في الواتساب 🚀</button>
-                <button class="action-btn" onclick="openBulkChat()" style="background-color: #202c33; margin-top: 12px; border: 1px solid var(--wa-border);">إرسال مكثف لعدة أرقام ⚡</button>
-            </div>
-
-            <div class="content-panel" id="settings-panel">
-                <div class="panel-header">
-                    <button class="back-arrow" onclick="closeAllPanels()">➔</button>
-                    <span>الإعدادات العملاقة ⚙️</span>
-                </div>
-                <div class="panel-body">
-                    
-                    <div class="form-group">
-                        <label style="color: var(--wa-green);">تخصيص المظهر (Theme):</label>
-                        <select id="theme-select" onchange="changeTheme()">
-                            <option value="dark">الوضع الداكن (WhatsApp Dark)</option>
-                            <option value="light">الوضع الفاتح (WhatsApp Light)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label style="color: var(--wa-green);">حجم الخط (Font Size):</label>
-                        <select id="font-size-select" onchange="changeFontSize()">
-                            <option value="16px">افتراضي (متوسط)</option>
-                            <option value="14px">صغير</option>
-                            <option value="19px">كبير</option>
-                            <option value="22px">كبير جداً</option>
-                        </select>
-                    </div>
-
-                    <div class="info-card" onclick="showPanel('about-developer-panel')" style="cursor: pointer; background: var(--wa-header-bg);">
-                        <strong style="color: #fff;">ℹ️ عن المطور</strong>
-                        <div style="color: var(--wa-text-sub); font-size: 0.85em;">اضغط لمعرفة معلومات المبرمج...</div>
-                    </div>
-
-                    <div class="info-card" onclick="showPanel('about-us-panel')" style="cursor: pointer; background: var(--wa-header-bg);">
-                        <strong style="color: #fff;">👥 من نحن</strong>
-                        <div style="color: var(--wa-text-sub); font-size: 0.85em;">معلومات وتفاصيل حول أداة الويب...</div>
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="content-panel" id="add-person-panel">
-                <div class="panel-header">
-                    <button class="back-arrow" onclick="closeAllPanels()">➔</button>
-                    <span>إضافة شخص جديد 👤➕</span>
-                </div>
-                <div class="panel-body" style="max-width: 500px;">
-                    <div class="form-group">
-                        <label>اسم الشخص:</label>
-                        <input type="text" id="contact-name" placeholder="مثال: علي رضوان">
-                    </div>
-                    <div class="form-group">
-                        <label>رقم الموبايل (بدول رمز الدولة):</label>
-                        <div class="phone-input-container">
-                            <span class="phone-prefix">+20</span>
-                            <input type="text" id="contact-phone" placeholder="مثال: 1234567890">
-                        </div>
-                    </div>
-                    <button class="action-btn" onclick="saveNewContact()">حفظ وتثبيت في القائمة الجانبية</button>
-                </div>
-            </div>
-
-            <div class="content-panel" id="about-developer-panel">
-                <div class="panel-header">
-                    <button class="back-arrow" onclick="showPanel('settings-panel')">➔</button>
-                    <span>عن المطور 💻</span>
-                </div>
-                <div class="panel-body">
-                    <div class="info-card" style="text-align: center;">
-                        <div class="user-avatar" style="width: 70px; height: 70px; font-size: 2em; margin: 0 auto 15px auto;">ع</div>
-                        <h3 style="margin: 5px 0;">المطور البشمهندس علي</h3>
-                        <p style="color: var(--wa-text-sub);">مبرمج ومطور تطبيقات ويب صاعد ذو رؤية برمجية متميزة.</p>
-                        <p>تم تصميم وهندسة هذا التطبيق بالكامل تحت إشراف وتوجيهات علي ليكون أداة مساعدة فائقة السرعة ومتكاملة لرواد تطبيق واتساب.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="content-panel" id="about-us-panel">
-                <div class="panel-header">
-                    <button class="back-arrow" onclick="showPanel('settings-panel')">➔</button>
-                    <span>من نحن 👥</span>
-                </div>
-                <div class="panel-body">
-                    <div class="info-card">
-                        <h3>منصة WhatsApp Web Pro</h3>
-                        <p>هي أداة ويب مساعدة متطورة تهدف إلى تسهيل المراسلة الفورية اليومية. تتيح للمستخدمين فتح غرف شات فورية للأرقام غير المسجلة لتوفير الوقت والجهد، بالإضافة إلى إدارة القوائم السريعة وتخصيص تجربة العرض المرئية بالكامل وبشكل آمن تماماً.</p>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-
-    <script>
-        // فتح لوحة فرعية معينة وإخفاء الباقي
-        function showPanel(panelId) {
-            closeAllPanels();
-            document.getElementById('main-tool-screen').style.display = 'none';
-            document.getElementById(panelId).style.display = 'flex';
-        }
-
-        // إغلاق كل اللوحات والعودة للشاشة الرئيسية
-        function closeAllPanels() {
-            document.querySelectorAll('.content-panel').forEach(panel => panel.style.display = 'none');
-            document.getElementById('main-tool-screen').style.display = 'block';
-        }
-
-        // فتح شات سريع (يضيف 20 تلقائياً للرقم المصري)
-        function openQuickChat() {
-            let phoneInput = document.getElementById('quick-phone').value.trim().replace(/[^0-9]/g, "");
-            let message = document.getElementById('quick-message').value.trim();
-            
-            if(!phoneInput) { alert("من فضلك اكتب الرقم أولاً!"); return; }
-            
-            // إضافة رمز مصر تلقائياً إذا شال الصفر أو حطه
-            if(phoneInput.startsWith("0")) { phoneInput = phoneInput.substring(1); }
-            let fullPhone = "20" + phoneInput
+            width
