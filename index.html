@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhatsApp Pro Hub</title>
+    <title>WhatsApp Pro</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,25 +13,104 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
         }
         .container {
             text-align: center;
             background-color: #111b21;
             padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            width: 90%;
+            max-width: 400px;
         }
         h1 {
-            color: #00a814;
+            color: #00a884;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            text-align: right;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #8696a0;
+            font-size: 14px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #222e35;
+            border-radius: 8px;
+            background-color: #2a3942;
+            color: #fff;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        textarea {
+            resize: none;
+            height: 100px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #00a884;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #008f72;
         }
     </style>
 </head>
 <body>
+
     <div class="container">
-        <h1>WhatsApp Pro Hub </h1>
-        <p>مرحباً بك ! تم إنشاء أساس التطبيق بنجاح وبطريقة احترافية.</p>
+        <h1>WhatsApp Pro 🚀</h1>
+        
+        <div class="form-group">
+            <label for="phone">رقم الهاتف (مع رمز الدولة بدون + مثل 2010...):</label>
+            <input type="text" id="phone" placeholder="مثال: 201012345678">
+        </div>
+
+        <div class="form-group">
+            <label for="message">الرسالة (اختياري):</label>
+            <textarea id="message" placeholder="اكتب رسالتك هنا..."></textarea>
+        </div>
+
+        <button onclick="sendWhatsApp()">إرسال عبر الواتساب السريع</button>
     </div>
+
+    <script>
+        function sendWhatsApp() {
+            var phone = document.getElementById('phone').value.trim();
+            var message = document.getElementById('message').value.trim();
+
+            if (phone === "") {
+                alert("من فضلك أدخل رقم الهاتف أولاً!");
+                return;
+            }
+
+            // تنظيف الرقم من أي مسافات أو علامة +
+            phone = phone.replace(/[^0-9]/g, "");
+
+            // إنشاء رابط الواتساب الرسمي
+            var url = "https://api.whatsapp.com/send?phone=" + phone;
+            if (message !== "") {
+                url += "&text=" + encodeURIComponent(message);
+            }
+
+            // فتح الرابط في تابة جديدة ليفتح تطبيق الواتساب
+            window.open(url, '_blank');
+        }
+    </script>
+
 </body>
 </html>
