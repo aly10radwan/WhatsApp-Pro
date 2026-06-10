@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#111b21">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" href="data:application/manifest+json;base64,ewogICJuYW1lIjogIldoYXRzQXBwIFdlYiBQcm8iLAogICJzaG9ydF9uYW1lIjogIldAIFBybyIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMGIxNDFhIiwK  IidoZW1lX2NvbG9yIjogIiMxMTFiMjEiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2Nkbi1pY29ucy1wbmcuZmxhdGljb24uY29tLzUxMi81OTY4LzU5Njg4NDEucG5nIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciCiAgICB9CiAgXQp9">
+    <link rel="manifest" href="data:application/manifest+json;base64,ewogICJuYW1lIjogIldoYXRzQXBwIFdlYiBQcm8iLAogICJzaG9ydF9uYW1lIjogIld@IFBybyIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMGIxNDFhIiwK  IidoZW1lX2NvbG9yIjogIiMxMTFiMjEiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2Nkbi1pY29ucy1wbmcuZmxhdGljb24uY29tLzUxMi81OTY4LzU5Njg4NDEucG5nIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciCiAgICB9CiAgXQp9">
 
     <style>
         :root {
@@ -38,8 +38,59 @@
             overflow: hidden;
         }
 
-        .app-window {
+        /* ----------------------------------------- */
+        /* صفحة تسجيل الدخول الاستهلالية */
+        /* ----------------------------------------- */
+        .login-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--wa-bg);
             display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            background-color: var(--wa-panel-bg);
+            border-radius: 12px;
+            padding: 40px 30px;
+            box-sizing: border-box;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            text-align: center;
+            border: 1px solid var(--wa-border);
+        }
+
+        .login-logo {
+            font-size: 3.5em;
+            margin-bottom: 10px;
+        }
+
+        .login-card h2 {
+            margin: 0 0 10px 0;
+            color: var(--wa-text-main);
+            font-weight: 600;
+            font-size: 1.6em;
+        }
+
+        .login-card p {
+            color: var(--wa-text-sub);
+            font-size: 0.9em;
+            margin-bottom: 30px;
+        }
+
+        /* ----------------------------------------- */
+        /* واجهة التطبيق الرئيسية (مخفية في البداية) */
+        /* ----------------------------------------- */
+        .app-window {
+            display: none; /* تظهر بعد تسجيل الدخول */
             width: 100%;
             height: 100%;
             background-color: var(--wa-panel-bg);
@@ -47,9 +98,7 @@
             position: relative;
         }
 
-        /* ----------------------------------------- */
         /* الجانب الأيمن: القائمة الجانبية */
-        /* ----------------------------------------- */
         .side-panel {
             width: 35%;
             min-width: 320px;
@@ -181,9 +230,7 @@
             text-overflow: ellipsis;
         }
 
-        /* ----------------------------------------- */
         /* الجانب الأيسر الكبيير */
-        /* ----------------------------------------- */
         .main-view {
             flex: 1;
             background-color: #222e35;
@@ -366,9 +413,7 @@
             overflow-y: auto;
         }
 
-        /* ----------------------------------------- */
-        /* دمج تصميم الهواتف الذكية وتجاوب الشاشة (Responsive) */
-        /* ----------------------------------------- */
+        /* تجاوب الشاشة للهواتف الذكية */
         @media (max-width: 768px) {
             .side-panel {
                 width: 100%;
@@ -388,7 +433,6 @@
                 z-index: 5;
             }
 
-            /* زر رجوع مخصص للموبايل عشان تخرج من الشات للقائمة */
             .mobile-back-btn {
                 display: block !important;
             }
@@ -408,11 +452,423 @@
 </head>
 <body>
 
-    <div class="app-window">
+    <div class="login-container" id="auth-screen">
+        <div class="login-card">
+            <div class="login-logo">💬</div>
+            <h2>مرحباً بك في WhatsApp Pro</h2>
+            <p>سجل دخولك باستخدام الرقم أو البريد الإلكتروني للبدء</p>
+            
+            <div class="form-group">
+                <label>الرقم أو البريد الإلكتروني:</label>
+                <input type="text" id="login-identity" placeholder="مثال: 01012345678 أو email@test.com">
+            </div>
+            
+            <div class="form-group">
+                <label>كلمة المرور:</label>
+                <input type="password" id="login-password" placeholder="••••••••">
+            </div>
+            
+            <button class="action-btn" onclick="handleLogin()">تسجيل الدخول 🔓</button>
+        </div>
+    </div>
+
+    <div class="app-window" id="main-app-window">
         
         <div class="side-panel" id="app-side-panel">
             <div class="side-header">
                 <div class="user-avatar" onclick="showPanel('main-tool-screen')" style="cursor: pointer;" title="الرئيسية">ع</div>
                 <button id="pwa-install-btn" onclick="triggerPwaInstall()">📥 تنزيل</button>
                 <div style="font-size: 0.85em; color: var(--wa-green);" id="global-status">متصل الآن 🟢</div>
-                <div class="header-icons
+                <div class="header-icons">
+                    <button onclick="showPanel('add-person-panel')" title="إضافة شخص جديد">👤➕</button>
+                    <button onclick="showPanel('settings-panel')" title="الإعدادات">⚙️</button>
+                </div>
+            </div>
+
+            <div class="tabs-menu">
+                <button class="tab-item-btn active" id="tab-all" onclick="switchContactTab('all')">المحادثات</button>
+                <button class="tab-item-btn" id="tab-archived" onclick="switchContactTab('archived')">المؤرشفة 📁</button>
+                <button class="tab-item-btn" id="tab-blocked" onclick="switchContactTab('blocked')">المحظورة 🚫</button>
+            </div>
+            
+            <div class="chat-list" id="saved-contacts-list"></div>
+        </div>
+
+        <div class="main-view" id="main-view-bg">
+            
+            <div class="tool-screen" id="main-tool-screen" style="display: block;">
+                <h2>بدء دردشة سريعة 💬</h2>
+                
+                <div class="form-group">
+                    <label>أدخل رقم الهاتف مباشرةً (بدون مفتاح الدولة):</label>
+                    <div class="input-with-button">
+                        <span style="color: var(--wa-text-sub); padding-left: 5px;">+20</span>
+                        <input type="text" id="quick-phone" placeholder="مثال: 1012345678">
+                    </div>
+                </div>
+
+                <div class="form-group" style="position: relative;">
+                    <label>نص الرسالة:</label>
+                    <div class="input-with-button">
+                        <button onclick="toggleEmojiPicker('quick-message')">😊</button>
+                        <input type="text" id="quick-message" placeholder="اكتب رسالتك الافتتاحية هنا...">
+                    </div>
+                </div>
+
+                <button class="action-btn" onclick="openQuickChat()">فتح الشات في الواتساب 🚀</button>
+            </div>
+
+            <div class="emoji-picker-popup" id="global-emoji-picker">
+                <div class="emoji-item" onclick="appendEmoji('😀')">😀</div>
+                <div class="emoji-item" onclick="appendEmoji('😂')">😂</div>
+                <div class="emoji-item" onclick="appendEmoji('😍')">😍</div>
+                <div class="emoji-item" onclick="appendEmoji('👍')">👍</div>
+                <div class="emoji-item" onclick="appendEmoji('🌹')">🌹</div>
+                <div class="emoji-item" onclick="appendEmoji(' صلي على محمد ﷺ')">🕌</div>
+            </div>
+
+            <div class="chat-window-panel" id="active-chat-window">
+                <div class="chat-window-header">
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <button class="mobile-back-btn" onclick="backToContactsMobile()">➔</button>
+                        <div class="user-avatar" id="active-chat-avatar" style="background-color: #202c33;">👤</div>
+                        <div>
+                            <div id="active-chat-name" style="font-weight: 500;">اسم المستخدم</div>
+                            <div style="font-size: 0.75em; color: var(--wa-green);" id="active-chat-status">متصل الآن 🟢</div>
+                        </div>
+                    </div>
+                    <div class="header-icons" style="display: flex; gap: 5px;">
+                        <button id="archive-btn" onclick="archiveCurrentContact()" style="font-size:0.85em; background:#202c33; padding:5px 8px; border-radius:4px; color:#fff;">أرشفة 📁</button>
+                        <button id="block-btn" onclick="blockCurrentContact()" style="font-size:0.85em; background:#ea0038; padding:5px 8px; border-radius:4px; color:#fff;">حظر 🚫</button>
+                    </div>
+                </div>
+                <div class="chat-window-body">
+                    <div class="tool-screen" style="max-width: 400px; text-align: center; background: rgba(17, 27, 33, 0.95);">
+                        <h3 id="chat-window-welcome-title" style="margin-top:0;">محادثة سريعة جاهزة</h3>
+                        <p style="font-size: 0.9em; color: var(--wa-text-sub);">يمكنك الآن توجيه الرسائل المباشرة عبر واجهة تطبيق الواتساب الرسمي.</p>
+                        <button class="action-btn" onclick="redirectActiveContact()">إرسال الرسالة عبر واتساب 🚀</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-panel" id="settings-panel">
+                <div class="panel-header">
+                    <button class="back-arrow" onclick="hideAllPanels()">➔</button>
+                    <span>الإعدادات ⚙️</span>
+                </div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label>المظهر المفضل (Theme):</label>
+                        <select id="theme-select" onchange="changeTheme()">
+                            <option value="dark">الوضع الداكن (WhatsApp Dark)</option>
+                            <option value="light">الوضع الفاتح (WhatsApp Light)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>حجم الخط (Font Size):</label>
+                        <select id="font-size-select" onchange="changeFontSize()">
+                            <option value="16px">افتراضي</option>
+                            <option value="14px">صغير</option>
+                            <option value="19px">كبير</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-panel" id="add-person-panel">
+                <div class="panel-header">
+                    <button class="back-arrow" onclick="hideAllPanels()">➔</button>
+                    <span>إضافة شخص جديد 👤➕</span>
+                </div>
+                <div class="panel-body" style="max-width: 450px;">
+                    <div class="form-group">
+                        <label>اسم الشخص:</label>
+                        <input type="text" id="contact-name" placeholder="مثال: علي رضوان">
+                    </div>
+                    <div class="form-group">
+                        <label>رقم الموبايل:</label>
+                        <div class="input-with-button">
+                            <span style="color: var(--wa-text-sub); padding-left: 5px;">+20</span>
+                            <input type="text" id="contact-phone" placeholder="مثال: 1022334455">
+                        </div>
+                    </div>
+                    <button class="action-btn" onclick="saveNewContact()">حفظ وتثبيت</button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        let currentTargetInputId = '';
+        let selectedContactIndex = null;
+        let currentTab = 'all';
+        let deferredPrompt;
+
+        // دالة إدارة تسجيل الدخول
+        function handleLogin() {
+            let identity = document.getElementById('login-identity').value.trim();
+            let pass = document.getElementById('login-password').value.trim();
+            
+            if(!identity || !pass) {
+                alert("برجاء إدخال الحساب وكلمة المرور أولاً!");
+                return;
+            }
+            
+            // إخفاء صفحة تسجيل الدخول وإظهار واجهة الأشخاص والتطبيق
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('main-app-window').style.display = 'flex';
+            
+            // حفظ الدخول مؤقتاً عشان الريفرش
+            sessionStorage.setItem('isLoggedIn', 'true');
+            loadContacts();
+        }
+
+        // ميزة الـ PWA والتنزيل
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('pwa-install-btn').style.display = 'block';
+        });
+
+        function triggerPwaInstall() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        document.getElementById('pwa-install-btn').style.display = 'none';
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        }
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                const swCode = `
+                    const cacheName = 'wa-pro-v1';
+                    self.addEventListener('install', e => self.skipWaiting());
+                    self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => caches.match(e.request))));
+                `;
+                const blob = new Blob([swCode], { type: 'application/javascript' });
+                navigator.serviceWorker.register(URL.createObjectURL(blob));
+            });
+        }
+
+        function toggleEmojiPicker(inputId) {
+            currentTargetInputId = inputId;
+            let picker = document.getElementById('global-emoji-picker');
+            picker.style.display = (picker.style.display === 'grid') ? 'none' : 'grid';
+        }
+
+        function appendEmoji(emoji) {
+            if(currentTargetInputId) {
+                document.getElementById(currentTargetInputId).value += emoji;
+            }
+            document.getElementById('global-emoji-picker').style.display = 'none';
+        }
+
+        function showPanel(panelId) {
+            hideAllPanels();
+            if (window.innerWidth <= 768) {
+                document.getElementById('app-side-panel').style.zIndex = '1';
+            }
+            document.getElementById('main-tool-screen').style.display = 'none';
+            document.getElementById(panelId).style.display = 'flex';
+        }
+
+        function hideAllPanels() {
+            document.querySelectorAll('.content-panel').forEach(p => p.style.display = 'none');
+            document.getElementById('active-chat-window').style.display = 'none';
+            document.getElementById('main-tool-screen').style.display = 'block';
+            if (window.innerWidth <= 768) {
+                document.getElementById('app-side-panel').style.zIndex = '10';
+            }
+        }
+
+        function backToContactsMobile() {
+            if (window.innerWidth <= 768) {
+                document.getElementById('app-side-panel').style.zIndex = '10';
+            }
+        }
+
+        function switchContactTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab-item-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            loadContacts();
+        }
+
+        function openQuickChat() {
+            let phone = document.getElementById('quick-phone').value.trim().replace(/[^0-9]/g, "");
+            let msg = document.getElementById('quick-message').value.trim();
+            if(!phone) { alert("اكتب الرقم أولاً!"); return; }
+            if(phone.startsWith("0")) phone = phone.substring(1);
+            
+            window.open(`https://api.whatsapp.com/send?phone=20${phone}&text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        function saveNewContact() {
+            let name = document.getElementById('contact-name').value.trim();
+            let phone = document.getElementById('contact-phone').value.trim().replace(/[^0-9]/g, "");
+            if(!name || !phone) { alert("اكمل البيانات!"); return; }
+            if(phone.startsWith("0")) phone = phone.substring(1);
+
+            let contacts = JSON.parse(localStorage.getItem('waContacts') || "[]");
+            contacts.push({ name: name, phone: "20" + phone, archived: false, blocked: false });
+            localStorage.setItem('waContacts', JSON.stringify(contacts));
+
+            document.getElementById('contact-name').value = "";
+            document.getElementById('contact-phone').value = "";
+            alert("✅ تم الحفظ بنجاح!");
+            loadContacts();
+            hideAllPanels();
+        }
+
+        function loadContacts() {
+            let contacts = JSON.parse(localStorage.getItem('waContacts') || "[]");
+            let container = document.getElementById('saved-contacts-list');
+            container.innerHTML = "";
+
+            let filtered = contacts.filter((c, index) => {
+                c.originalIndex = index;
+                if (currentTab === 'archived') return c.archived && !c.blocked;
+                if (currentTab === 'blocked') return c.blocked;
+                return !c.archived && !c.blocked;
+            });
+
+            if(filtered.length === 0) {
+                container.innerHTML = `<div style="padding:20px; text-align:center; color:var(--wa-text-sub); font-size:0.85em;">لا يوجد عناصر هنا</div>`;
+                return;
+            }
+
+            filtered.forEach(c => {
+                let item = document.createElement('div');
+                item.className = "chat-item";
+                item.onclick = function() { openActiveChatWindow(c.originalIndex); };
+                item.innerHTML = `
+                    <div class="chat-avatar">${c.blocked ? '🚫' : '👤'}</div>
+                    <div class="chat-info">
+                        <div class="chat-title-row">
+                            <h3>${c.name}</h3>
+                        </div>
+                        <span class="chat-preview">${c.blocked ? 'هذا الرقم محظور' : 'انقر لفتح المحادثة'}</span>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function openActiveChatWindow(index) {
+            selectedContactIndex = index;
+            let contacts = JSON.parse(localStorage.getItem('waContacts') || "[]");
+            let contact = contacts[index];
+
+            document.getElementById('main-tool-screen').style.display = 'none';
+            document.querySelectorAll('.content-panel').forEach(p => p.style.display = 'none');
+            
+            let chatWindow = document.getElementById('active-chat-window');
+            chatWindow.style.display = 'flex';
+
+            document.getElementById('active-chat-name').innerText = contact.name;
+            
+            if (window.innerWidth <= 768) {
+                document.getElementById('app-side-panel').style.zIndex = '1';
+            }
+
+            let statusText = document.getElementById('active-chat-status');
+            let blockBtn = document.getElementById('block-btn');
+            let archiveBtn = document.getElementById('archive-btn');
+
+            if(contact.blocked) {
+                statusText.innerText = "محظور 🚫";
+                statusText.style.color = "#ea0038";
+                blockBtn.innerText = "فك الحظر ✅";
+            } else {
+                statusText.innerText = "متصل الآن 🟢";
+                statusText.style.color = "var(--wa-green)";
+                blockBtn.innerText = "حظر 🚫";
+            }
+
+            archiveBtn.innerText = contact.archived ? "إلغاء الأرشفة 📤" : "أرشفة 📁";
+        }
+
+        function redirectActiveContact() {
+            let contacts = JSON.parse(localStorage.getItem('waContacts') || "[]");
+            let contact = contacts[selectedContactIndex];
+            if(contact.blocked) { alert("فك حظر الرقم أولاً لتتمكن من مراسلته!"); return; }
+            window.open(`https://api.whatsapp.com/send?phone=${contact.phone}`, '_blank');
+        }
+
+        function archiveCurrentContact() {
+            let contacts = JSON.parse(localStorage.getItem('waContacts') || "[]");
+            contacts[selectedContactIndex].archived = !contacts[selectedContactIndex].archived;
+            localStorage.setItem('waContacts', JSON.stringify(contacts));
+            loadContacts();
+            hideAllPanels();
+            alert("تم تحديث حالة الأرشفة!");
+        }
+
+        function blockCurrentContact() {
+            let contacts = JSON.parse(localStorage.getItem('waContacts') || "[]");
+            contacts[selectedContactIndex].blocked = !contacts[selectedContactIndex].blocked;
+            localStorage.setItem('waContacts', JSON.stringify(contacts));
+            loadContacts();
+            hideAllPanels();
+            alert("تم تحديث حالة الحظر!");
+        }
+
+        function changeTheme() {
+            let theme = document.getElementById('theme-select').value;
+            localStorage.setItem('appTheme', theme);
+            applyTheme(theme);
+        }
+
+        function applyTheme(theme) {
+            let mainBg = document.getElementById('main-view-bg');
+            if (theme === 'light') {
+                document.documentElement.style.setProperty('--wa-bg', '#eae6df');
+                document.documentElement.style.setProperty('--wa-panel-bg', '#ffffff');
+                document.documentElement.style.setProperty('--wa-header-bg', '#f0f2f5');
+                document.documentElement.style.setProperty('--wa-text-main', '#111b21');
+                document.documentElement.style.setProperty('--wa-text-sub', '#667781');
+                document.documentElement.style.setProperty('--wa-input-bg', '#f0f2f5');
+                document.documentElement.style.setProperty('--wa-border', '#e1e9eb');
+                if(mainBg) mainBg.style.backgroundColor = '#f8f9fa';
+            } else {
+                document.documentElement.style.setProperty('--wa-bg', '#0b141a');
+                document.documentElement.style.setProperty('--wa-panel-bg', '#111b21');
+                document.documentElement.style.setProperty('--wa-header-bg', '#202c33');
+                document.documentElement.style.setProperty('--wa-text-main', '#e9edef');
+                document.documentElement.style.setProperty('--wa-text-sub', '#8696a0');
+                document.documentElement.style.setProperty('--wa-input-bg', '#202c33');
+                document.documentElement.style.setProperty('--wa-border', '#222e35');
+                if(mainBg) mainBg.style.backgroundColor = '#222e35';
+            }
+        }
+
+        function changeFontSize() {
+            let size = document.getElementById('font-size-select').value;
+            localStorage.setItem('appFontSize', size);
+            document.documentElement.style.setProperty('--font-size-base', size);
+        }
+
+        window.onload = function() {
+            // التحقق مما إذا كان مسجلاً للدخول بالفعل لمنع إعادة تسجيل الدخول عند تحديث الصفحة
+            if(sessionStorage.getItem('isLoggedIn') === 'true') {
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('main-app-window').style.display = 'flex';
+            }
+
+            let savedTheme = localStorage.getItem('appTheme') || 'dark';
+            let savedSize = localStorage.getItem('appFontSize') || '16px';
+            document.getElementById('theme-select').value = savedTheme;
+            document.getElementById('font-size-select').value = savedSize;
+            applyTheme(savedTheme);
+            document.documentElement.style.setProperty('--font-size-base', savedSize);
+            loadContacts();
+        }
+    </script>
+</body>
+</html>
