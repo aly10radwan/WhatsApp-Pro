@@ -2,79 +2,95 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>WhatsApp Web Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        :root { --wa-green: #00a884; --wa-bg: #111b21; --wa-text: #e9edef; }
-        body { margin: 0; padding: 0; font-family: sans-serif; background: #0c1317; }
+        :root { --wa-teal: #008069; --wa-teal-light: #00a884; --wa-bg: #ffffff; --wa-login-bg: #111b21; }
+        body, html { margin: 0; padding: 0; height: 100%; font-family: sans-serif; background-color: #f0f2f5; }
 
         /* شاشة الدخول */
-        #login-screen { display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .login-box { width: 350px; background: #202c33; padding: 30px; border-radius: 12px; color: white; text-align: center; }
-        
-        /* شاشة الواتساب (مخفية في البداية) */
-        #app-screen { display: none; height: 100vh; background: #111b21; padding: 20px; }
-        
-        input, select { width: 100%; padding: 12px; margin: 10px 0; border-radius: 6px; border: 1px solid #3d4a52; background: #2a3942; color: white; }
-        .input-valid { border: 2px solid var(--wa-green) !important; }
-        
-        button { width: 100%; padding: 12px; border: none; border-radius: 6px; background: #3d4a52; color: #8696a0; font-weight: bold; cursor: not-allowed; }
-        .btn-ready { background-color: var(--wa-green) !important; color: white !important; cursor: pointer; }
+        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--wa-login-bg); display: flex; justify-content: center; align-items: center; z-index: 10000; }
+        .login-card { width: 90%; max-width: 400px; background: #202c33; padding: 40px 25px; border-radius: 15px; text-align: center; border: 1px solid #3d4a52; }
+        .login-card i { font-size: 4em; color: var(--wa-teal-light); margin-bottom: 20px; }
+        .login-card h2 { color: white; margin-bottom: 20px; }
+        select, input { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #3d4a52; background: #2a3942; color: white; box-sizing: border-box; text-align: center; }
+        .input-valid { border: 2px solid var(--wa-teal-light) !important; }
+        .btn-login { width: 100%; padding: 14px; background-color: #3d4a52; color: #8696a0; border: none; border-radius: 8px; font-weight: bold; cursor: not-allowed; }
+        .btn-login.active { background-color: var(--wa-teal-light) !important; color: white !important; cursor: pointer; }
+
+        /* شاشة الواتساب */
+        #app-screen { display: none; height: 100vh; width: 100%; max-width: 450px; margin: 0 auto; background-color: var(--wa-bg); position: relative; }
+        .header { background-color: var(--wa-teal); color: white; padding: 15px; }
+        .tabs { display: flex; justify-content: space-around; margin-top: 15px; font-weight: bold; }
+        .chat-list { height: 80vh; overflow-y: auto; background: white; }
+        .chat-item { display: flex; padding: 15px; border-bottom: 1px solid #eee; align-items: center; }
+        .profile-pic { width: 50px; height: 50px; border-radius: 50%; background: #ccc; margin-left: 15px; }
+        .fab { position: absolute; bottom: 20px; left: 20px; width: 55px; height: 55px; background-color: var(--wa-teal-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; }
     </style>
 </head>
 <body>
 
-<div id="login-screen">
-    <div class="login-box">
-        <h2>WhatsApp Pro</h2>
-        <select id="method" onchange="updateUI()">
-            <option value="phone">رقم الهاتف فقط</option>
-            <option value="gmail">حساب الجيميل فقط</option>
-            <option value="both">الاثنين معاً</option>
-        </select>
-        
-        <div id="p-group"><input type="text" id="phone" placeholder="رقم الهاتف (11 رقم)" oninput="check()"></div>
-        <div id="g-group" style="display:none;"><input type="text" id="gmail" placeholder="حساب الجيميل" oninput="check()"></div>
-        
-        <button id="btn" disabled onclick="enterApp()">دخول</button>
-    </div>
-</div>
-
-<div id="app-screen">
-    <h1 style="color: var(--wa-green);">تم تسجيل الدخول بنجاح! 🟢</h1>
-    <p style="color: white;">أهلاً بك في واجهة الواتساب الخاصة بك...</p>
+    <div id="login-screen">
+        <div class="login-card">
+            <i class="fab fa-whatsapp"></i>
+            <h2>WhatsApp Pro</h2>
+            <select id="method-select" onchange="toggleInputs()">
+                <option value="phone">رقم الموبايل فقط</option>
+                <option value="gmail">حساب الجيميل فقط</option>
+                <option value="both">الاثنين معاً</option>
+            </select>
+            <input type="text" id="phone-input" placeholder="رقم الهاتف (11 رقم)" oninput="validate()">
+            <input type="text" id="gmail-input" placeholder="example@gmail.com" oninput="validate()" style="display:none;">
+            <button id="btn-submit" class="btn-login" disabled onclick="startApp()">فتح الواتساب 🔓</button>
+        </div>
     </div>
 
-<script>
-    function updateUI() {
-        let m = document.getElementById('method').value;
-        document.getElementById('p-group').style.display = (m === 'gmail') ? 'none' : 'block';
-        document.getElementById('g-group').style.display = (m === 'phone') ? 'none' : 'block';
-        check();
-    }
+    <div id="app-screen">
+        <div class="header">
+            <div style="display:flex; justify-content:space-between;">
+                <h1>WhatsApp</h1>
+                <i class="fas fa-search" style="font-size:20px; margin-top:10px;"></i>
+            </div>
+            <div class="tabs">
+                <span>الدردشات</span>
+                <span>الحالة</span>
+                <span>المكالمات</span>
+            </div>
+        </div>
+        <div class="chat-list">
+            <div class="chat-item">
+                <div class="profile-pic"></div>
+                <div><b>أحمد محمد</b><br><span style="color:#666;">السلام عليكم!</span></div>
+            </div>
+        </div>
+        <div class="fab"><i class="fas fa-comment-alt"></i></div>
+    </div>
 
-    function check() {
-        let m = document.getElementById('method').value;
-        let p = document.getElementById('phone');
-        let g = document.getElementById('gmail');
-        let btn = document.getElementById('btn');
-        
-        let pValid = (p.value.replace(/[^0-9]/g, "").length === 11);
-        let gValid = (g.value.includes('@'));
-
-        if(p.parentElement.style.display !== 'none') p.className = pValid ? 'input-valid' : '';
-        if(g.parentElement.style.display !== 'none') g.className = gValid ? 'input-valid' : '';
-
-        let ok = (m === 'phone') ? pValid : (m === 'gmail') ? gValid : (pValid && gValid);
-        
-        btn.className = ok ? 'btn-ready' : '';
-        btn.disabled = !ok;
-    }
-
-    function enterApp() {
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('app-screen').style.display = 'block';
-    }
-</script>
-
+    <script>
+        function toggleInputs() {
+            const method = document.getElementById('method-select').value;
+            document.getElementById('phone-input').style.display = (method === 'gmail') ? 'none' : 'block';
+            document.getElementById('gmail-input').style.display = (method === 'phone') ? 'none' : 'block';
+            validate();
+        }
+        function validate() {
+            const method = document.getElementById('method-select').value;
+            const p = document.getElementById('phone-input');
+            const g = document.getElementById('gmail-input');
+            const btn = document.getElementById('btn-submit');
+            let pOk = (p.value.replace(/[^0-9]/g, "").length === 11);
+            let gOk = (g.value.includes('@'));
+            p.className = pOk ? 'input-valid' : '';
+            g.className = gOk ? 'input-valid' : '';
+            let ready = (method === 'phone') ? pOk : (method === 'gmail') ? gOk : (pOk && gOk);
+            btn.disabled = !ready;
+            btn.className = ready ? 'btn-login active' : 'btn-login';
+        }
+        function startApp() {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('app-screen').style.display = 'block';
+        }
+    </script>
 </body>
 </html>
