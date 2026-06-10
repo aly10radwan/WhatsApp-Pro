@@ -2,45 +2,53 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <title>WhatsApp Web Pro</title>
     <style>
-        :root { --wa-green: #00a884; --wa-bg: #111b21; --wa-text: #fff; }
-        body { background: var(--wa-bg); color: var(--wa-text); font-family: sans-serif; display: flex; justify-content: center; padding-top: 50px; }
-        .box { width: 350px; background: #202c33; padding: 20px; border-radius: 10px; }
-        .form-group { margin-bottom: 15px; }
-        input, select { width: 100%; padding: 10px; box-sizing: border-box; background: #2a3942; border: 1px solid #3d4a52; color: white; border-radius: 5px; }
+        :root { --wa-green: #00a884; --wa-bg: #111b21; --wa-text: #e9edef; }
+        body { margin: 0; padding: 0; font-family: sans-serif; background: #0c1317; }
+
+        /* شاشة الدخول */
+        #login-screen { display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .login-box { width: 350px; background: #202c33; padding: 30px; border-radius: 12px; color: white; text-align: center; }
         
-        /* كلاسات اللون الأخضر عند النجاح */
+        /* شاشة الواتساب (مخفية في البداية) */
+        #app-screen { display: none; height: 100vh; background: #111b21; padding: 20px; }
+        
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border-radius: 6px; border: 1px solid #3d4a52; background: #2a3942; color: white; }
         .input-valid { border: 2px solid var(--wa-green) !important; }
-        .btn-ready { background-color: var(--wa-green) !important; color: white !important; cursor: pointer; }
         
-        button { width: 100%; padding: 12px; margin-top: 10px; border: none; border-radius: 5px; background: #3d4a52; color: #8696a0; font-weight: bold; }
+        button { width: 100%; padding: 12px; border: none; border-radius: 6px; background: #3d4a52; color: #8696a0; font-weight: bold; cursor: not-allowed; }
+        .btn-ready { background-color: var(--wa-green) !important; color: white !important; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="box">
-    <h2 id="title">تسجيل الدخول</h2>
-    
-    <div class="form-group">
+<div id="login-screen">
+    <div class="login-box">
+        <h2>WhatsApp Pro</h2>
         <select id="method" onchange="updateUI()">
             <option value="phone">رقم الهاتف فقط</option>
             <option value="gmail">حساب الجيميل فقط</option>
             <option value="both">الاثنين معاً</option>
         </select>
+        
+        <div id="p-group"><input type="text" id="phone" placeholder="رقم الهاتف (11 رقم)" oninput="check()"></div>
+        <div id="g-group" style="display:none;"><input type="text" id="gmail" placeholder="حساب الجيميل" oninput="check()"></div>
+        
+        <button id="btn" disabled onclick="enterApp()">دخول</button>
     </div>
-
-    <div class="form-group" id="p-group"><input type="text" id="phone" placeholder="رقم الهاتف" oninput="check()"></div>
-    <div class="form-group" id="g-group" style="display:none;"><input type="text" id="gmail" placeholder="حساب الجيميل" oninput="check()"></div>
-
-    <button id="btn" disabled>دخول</button>
 </div>
+
+<div id="app-screen">
+    <h1 style="color: var(--wa-green);">تم تسجيل الدخول بنجاح! 🟢</h1>
+    <p style="color: white;">أهلاً بك في واجهة الواتساب الخاصة بك...</p>
+    </div>
 
 <script>
     function updateUI() {
         let m = document.getElementById('method').value;
         document.getElementById('p-group').style.display = (m === 'gmail') ? 'none' : 'block';
         document.getElementById('g-group').style.display = (m === 'phone') ? 'none' : 'block';
-        document.getElementById('title').innerText = (m === 'both') ? "بيانات الدخول كاملة" : "تسجيل الدخول";
         check();
     }
 
@@ -50,23 +58,21 @@
         let g = document.getElementById('gmail');
         let btn = document.getElementById('btn');
         
-        let pValid = (p.value.length === 11);
+        let pValid = (p.value.replace(/[^0-9]/g, "").length === 11);
         let gValid = (g.value.includes('@'));
 
-        // تلوين الخانات
         if(p.parentElement.style.display !== 'none') p.className = pValid ? 'input-valid' : '';
         if(g.parentElement.style.display !== 'none') g.className = gValid ? 'input-valid' : '';
 
-        // منطق الزرار
         let ok = (m === 'phone') ? pValid : (m === 'gmail') ? gValid : (pValid && gValid);
         
-        if(ok) {
-            btn.className = 'btn-ready';
-            btn.disabled = false;
-        } else {
-            btn.className = '';
-            btn.disabled = true;
-        }
+        btn.className = ok ? 'btn-ready' : '';
+        btn.disabled = !ok;
+    }
+
+    function enterApp() {
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('app-screen').style.display = 'block';
     }
 </script>
 
