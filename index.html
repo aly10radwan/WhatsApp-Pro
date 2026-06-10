@@ -38,9 +38,7 @@
             overflow: hidden;
         }
 
-        /* ----------------------------------------- */
-        /* صفحة تسجيل الدخول المبسطة (خانة واحدة) */
-        /* ----------------------------------------- */
+        /* صفحة تسجيل الدخول */
         .login-container {
             position: fixed;
             top: 0;
@@ -86,9 +84,7 @@
             margin-bottom: 25px;
         }
 
-        /* ----------------------------------------- */
         /* واجهة التطبيق الرئيسية */
-        /* ----------------------------------------- */
         .app-window {
             display: none; 
             width: 100%;
@@ -98,7 +94,6 @@
             position: relative;
         }
 
-        /* الجانب الأيمن */
         .side-panel {
             width: 35%;
             min-width: 320px;
@@ -108,7 +103,6 @@
             flex-direction: column;
             background-color: var(--wa-panel-bg);
             height: 100%;
-            transition: all 0.3s ease;
         }
 
         .side-header {
@@ -192,7 +186,7 @@
             border-bottom: 1px solid rgba(34, 46, 53, 0.4);
         }
 
-        .chat-item:hover, .chat-item.active {
+        .chat-item:hover {
             background-color: var(--wa-header-bg);
         }
 
@@ -230,7 +224,6 @@
             text-overflow: ellipsis;
         }
 
-        /* الجانب الأيسر الكبيير */
         .main-view {
             flex: 1;
             background-color: #222e35;
@@ -239,7 +232,6 @@
             align-items: center;
             position: relative;
             height: 100%;
-            transition: all 0.3s ease;
         }
 
         .tool-screen {
@@ -250,21 +242,6 @@
             background-color: var(--wa-panel-bg);
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-
-        @media (max-width: 768px) {
-            .tool-screen {
-                max-width: 90%;
-                padding: 20px;
-            }
-        }
-
-        .tool-screen h2 {
-            margin-top: 0;
-            color: var(--wa-green);
-            text-align: center;
-            font-weight: 300;
-            margin-bottom: 25px;
         }
 
         .form-group {
@@ -296,7 +273,7 @@
             padding: 0 5px;
         }
 
-        input, textarea, select {
+        input, select {
             width: 100%;
             padding: 12px;
             background-color: var(--wa-input-bg);
@@ -327,7 +304,7 @@
             margin-top: 8px;
         }
 
-        /* لوحة الشات النشط الفورية */
+        /* لوحة الشات النشط */
         .chat-window-panel {
             width: 100%;
             height: 100%;
@@ -353,4 +330,338 @@
             justify-content: center;
             align-items: center;
             background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
-            opacity: 0
+        }
+
+        /* صندوق الإيموجي */
+        .emoji-picker-popup {
+            position: absolute;
+            bottom: 75px;
+            right: 30px;
+            background-color: var(--wa-header-bg);
+            border: 1px solid var(--wa-border);
+            border-radius: 8px;
+            padding: 10px;
+            display: none;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            z-index: 1000;
+        }
+
+        .emoji-item {
+            font-size: 1.4em;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        /* القوائم الجانبية المفتوحة */
+        .content-panel {
+            width: 100%;
+            height: 100%;
+            background-color: #1f2c34;
+            display: none;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            background-color: var(--wa-header-bg);
+            height: 60px;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .back-arrow {
+            background: none;
+            border: none;
+            color: var(--wa-text-main);
+            font-size: 1.4em;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .panel-body {
+            flex: 1;
+            padding: 25px 40px;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 768px) {
+            .side-panel {
+                width: 100%;
+                position: absolute;
+                left: 0;
+                top: 0;
+                z-index: 10;
+            }
+            .main-view {
+                width: 100%;
+                position: absolute;
+                left: 0;
+                top: 0;
+                z-index: 5;
+            }
+            .mobile-back-btn { display: block !important; }
+        }
+
+        .mobile-back-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--wa-text-main);
+            font-size: 1.5em;
+            cursor: pointer;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container" id="auth-screen">
+        <div class="login-card">
+            <div class="login-logo">💬</div>
+            <h2>WhatsApp Pro</h2>
+            <p>أدخل اسم المستخدم أو رقم الحساب للدخول فوراً</p>
+            <div class="form-group">
+                <input type="text" id="login-identity" placeholder="اكتب اسم الحساب هنا (اختياري)..." style="text-align: center; font-size: 1.1em;">
+            </div>
+            <button class="action-btn" onclick="handleLogin()">دخول سريع 🔓</button>
+        </div>
+    </div>
+
+    <div class="app-window" id="main-app-window">
+        
+        <div class="side-panel" id="app-side-panel">
+            <div class="side-header">
+                <div class="user-avatar" id="global-user-avatar" onclick="showPanel('main-tool-screen')" style="cursor: pointer;">ع</div>
+                <button id="pwa-install-btn" onclick="triggerPwaInstall()">📥 تنزيل</button>
+                <div style="font-size: 0.85em; color: var(--wa-green);">متصل الآن 🟢</div>
+                <div class="header-icons">
+                    <button onclick="showPanel('add-person-panel')">👤➕</button>
+                    <button onclick="showPanel('settings-panel')">⚙️</button>
+                </div>
+            </div>
+
+            <div class="tabs-menu">
+                <button class="tab-item-btn active" id="tab-all" onclick="switchContactTab('all')">المحادثات</button>
+                <button class="tab-item-btn" id="tab-archived" onclick="switchContactTab('archived')">المؤرشفة 📁</button>
+                <button class="tab-item-btn" id="tab-blocked" onclick="switchContactTab('blocked')">المحظورة 🚫</button>
+            </div>
+            <div class="chat-list" id="saved-contacts-list"></div>
+        </div>
+
+        <div class="main-view" id="main-view-bg">
+            
+            <div class="tool-screen" id="main-tool-screen" style="display: block;">
+                <h2>بدء دردشة سريعة 💬</h2>
+                <div class="form-group">
+                    <label>أدخل رقم الهاتف مباشرةً (بدون مفتاح الدولة):</label>
+                    <div class="input-with-button">
+                        <span style="color: var(--wa-text-sub); padding-left: 5px;">+20</span>
+                        <input type="text" id="quick-phone" placeholder="مثال: 1012345678">
+                    </div>
+                </div>
+                <div class="form-group" style="position: relative;">
+                    <label>نص الرسالة:</label>
+                    <div class="input-with-button">
+                        <button onclick="toggleEmojiPicker('quick-message')">😊</button>
+                        <input type="text" id="quick-message" placeholder="اكتب رسالتك الافتتاحية هنا...">
+                    </div>
+                </div>
+                <button class="action-btn" onclick="openQuickChat()">فتح الشات في الواتساب 🚀</button>
+            </div>
+
+            <div class="emoji-picker-popup" id="global-emoji-picker">
+                <div class="emoji-item" onclick="appendEmoji('😀')">😀</div>
+                <div class="emoji-item" onclick="appendEmoji('😂')">😂</div>
+                <div class="emoji-item" onclick="appendEmoji('😍')">😍</div>
+                <div class="emoji-item" onclick="appendEmoji('👍')">👍</div>
+                <div class="emoji-item" onclick="appendEmoji('🌹')">🌹</div>
+                <div class="emoji-item" onclick="appendEmoji(' صلي على محمد ﷺ')">🕌</div>
+            </div>
+
+            <div class="chat-window-panel" id="active-chat-window">
+                <div class="chat-window-header">
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <button class="mobile-back-btn" onclick="backToContactsMobile()">➔</button>
+                        <div class="user-avatar" id="active-chat-avatar" style="background-color: #202c33;">👤</div>
+                        <div>
+                            <div id="active-chat-name" style="font-weight: 500;">اسم المستخدم</div>
+                            <div style="font-size: 0.75em; color: var(--wa-green);" id="active-chat-status">متصل الآن 🟢</div>
+                        </div>
+                    </div>
+                    <div class="header-icons">
+                        <button id="archive-btn" onclick="archiveCurrentContact()" style="font-size:0.85em; background:#202c33; padding:5px 8px; border-radius:4px; color:#fff;">أرشفة 📁</button>
+                        <button id="block-btn" onclick="blockCurrentContact()" style="font-size:0.85em; background:#ea0038; padding:5px 8px; border-radius:4px; color:#fff;">حظر 🚫</button>
+                    </div>
+                </div>
+                <div class="chat-window-body">
+                    <div class="tool-screen" style="max-width: 400px; text-align: center; background: rgba(17, 27, 33, 0.95);">
+                        <h3>محادثة سريعة جاهزة</h3>
+                        <p style="font-size: 0.9em; color: var(--wa-text-sub);">يمكنك الآن توجيه الرسائل المباشرة عبر واجهة تطبيق الواتساب الرسمي.</p>
+                        <button class="action-btn" onclick="redirectActiveContact()">إرسال الرسالة عبر واتساب 🚀</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-panel" id="settings-panel">
+                <div class="panel-header">
+                    <button class="back-arrow" onclick="hideAllPanels()">➔</button>
+                    <span>الإعدادات ⚙️</span>
+                </div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label>المظهر المفضل (Theme):</label>
+                        <select id="theme-select" onchange="changeTheme()">
+                            <option value="dark">الوضع الداكن (WhatsApp Dark)</option>
+                            <option value="light">الوضع الفاتح (WhatsApp Light)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>حجم الخط (Font Size):</label>
+                        <select id="font-size-select" onchange="changeFontSize()">
+                            <option value="16px">افتراضي</option>
+                            <option value="14px">صغير</option>
+                            <option value="19px">كبير</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-panel" id="add-person-panel">
+                <div class="panel-header">
+                    <button class="back-arrow" onclick="hideAllPanels()">➔</button>
+                    <span>إضافة شخص جديد 👤➕</span>
+                </div>
+                <div class="panel-body" style="max-width: 450px;">
+                    <div class="form-group">
+                        <label>اسم الشخص:</label>
+                        <input type="text" id="contact-name" placeholder="مثال: علي رضوان">
+                    </div>
+                    <div class="form-group">
+                        <label>رقم الموبايل:</label>
+                        <div class="input-with-button">
+                            <span style="color: var(--wa-text-sub); padding-left: 5px;">+20</span>
+                            <input type="text" id="contact-phone" placeholder="مثال: 1022334455">
+                        </div>
+                    </div>
+                    <button class="action-btn" onclick="saveNewContact()">حفظ وتثبيت</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        let currentTargetInputId = '';
+        let selectedContactIndex = null;
+        let currentTab = 'all';
+        let deferredPrompt;
+
+        function handleLogin() {
+            let inputEl = document.getElementById('login-identity');
+            let identity = inputEl ? inputEl.value.trim() : "";
+            if(!identity) identity = "زائر";
+            
+            let avatarEl = document.getElementById('global-user-avatar');
+            if(avatarEl) avatarEl.innerText = identity.charAt(0).toUpperCase();
+
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('main-app-window').style.display = 'flex';
+            
+            sessionStorage.setItem('isLoggedIn', 'true');
+            sessionStorage.setItem('userAccountName', identity);
+            loadContacts();
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            let pwaBtn = document.getElementById('pwa-install-btn');
+            if(pwaBtn) pwaBtn.style.display = 'block';
+        });
+
+        function triggerPwaInstall() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        let pwaBtn = document.getElementById('pwa-install-btn');
+                        if(pwaBtn) pwaBtn.style.display = 'none';
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        }
+
+        function toggleEmojiPicker(inputId) {
+            currentTargetInputId = inputId;
+            let picker = document.getElementById('global-emoji-picker');
+            if(picker) picker.style.display = (picker.style.display === 'grid') ? 'none' : 'grid';
+        }
+
+        function appendEmoji(emoji) {
+            if(currentTargetInputId) {
+                let inputEl = document.getElementById(currentTargetInputId);
+                if(inputEl) inputEl.value += emoji;
+            }
+            let picker = document.getElementById('global-emoji-picker');
+            if(picker) picker.style.display = 'none';
+        }
+
+        function showPanel(panelId) {
+            hideAllPanels();
+            if (window.innerWidth <= 768) {
+                document.getElementById('app-side-panel').style.zIndex = '1';
+            }
+            document.getElementById('main-tool-screen').style.display = 'none';
+            let panel = document.getElementById(panelId);
+            if(panel) panel.style.display = 'flex';
+        }
+
+        function hideAllPanels() {
+            document.querySelectorAll('.content-panel').forEach(p => p.style.display = 'none');
+            document.getElementById('active-chat-window').style.display = 'none';
+            document.getElementById('main-tool-screen').style.display = 'block';
+            if (window.innerWidth <= 768) {
+                document.getElementById('app-side-panel').style.zIndex = '10';
+            }
+        }
+
+        function backToContactsMobile() {
+            if (window.innerWidth <= 768) {
+                document.getElementById('app-side-panel').style.zIndex = '10';
+            }
+        }
+
+        function switchContactTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab-item-btn').forEach(btn => btn.classList.remove('active'));
+            let tabBtn = document.getElementById('tab-' + tab);
+            if(tabBtn) tabBtn.classList.add('active');
+            loadContacts();
+        }
+
+        function openQuickChat() {
+            let phoneEl = document.getElementById('quick-phone');
+            let msgEl = document.getElementById('quick-message');
+            if(!phoneEl || !msgEl) return;
+            
+            let phone = phoneEl.value.trim().replace(/[^0-9]/g, "");
+            let msg = msgEl.value.trim();
+            if(!phone) { alert("اكتب الرقم أولاً!"); return; }
+            if(phone.startsWith("0")) phone = phone.substring(1);
+            
+            window.open(`https://api.whatsapp.com/send?phone=20${phone}&text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        function saveNewContact() {
+            let nameEl = document.getElementById('contact-name');
+            let phoneEl = document.getElementById('contact-phone');
+            if(!nameEl || !phoneEl) return;
+
+            let name = nameEl.value.trim();
+            let phone = phoneEl.value.trim().replace(/[^0-9]/g, "");
+            if(!name || !phone) { alert("اكمل البيانات!"); return; }
