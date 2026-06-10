@@ -259,4 +259,98 @@
             }
         }
 
-        .tool-screen h2
+        .tool-screen h2 {
+            margin-top: 0;
+            color: var(--wa-green);
+            text-align: center;
+            font-weight: 300;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--wa-text-sub);
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+
+        .input-with-button {
+            display: flex;
+            align-items: center;
+            background-color: var(--wa-input-bg);
+            border-radius: 6px;
+            padding: 0 12px;
+            border: 1px solid var(--wa-border);
+        }
+
+        .input-with-button button {
+            background: none;
+            border: none;
+            font-size: 1.3em;
+            cursor: pointer;
+            padding: 0 5px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--wa-input-bg);
+            color: var(--wa-text-main);
+            border: 1px solid var(--wa-border);
+            border-radius: 6px;
+            font-size: 1em;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .input-with-button input {
+            border: none;
+            background: none;
+            padding: 12px 8px;
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--wa-green);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        /* لوحة الشات النشط الفورية */
+        .chat-window-panel {
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            background-color: #0b141a;
+        }
+
+        .chat-window-header {
+            background-color: var(--wa-header-bg);
+            height: 60px;
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--wa-border);
+        }
+
+        .chat-window-body {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+            opacity: 0
