@@ -2,403 +2,73 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhatsApp Web Pro</title>
-    
-    <meta name="theme-color" content="#111b21">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" href="data:application/manifest+json;base64,ewogICJuYW1lIjogIldoYXRzQXBwIFdlYiBQcm8iLAogICJzaG9ydF9uYW1lIjogIld@IFBybyIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMGIxNDFhIiwK  IidoZW1lX2NvbG9yIjogIiMxMTFiMjEiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2Nkbi1pY29ucy1wbmcuZmxhdGljb24uY29tLzUxMi81OTY4LzU5Njg4NDEucG5nIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciCiAgICB9CiAgXQp9">
-
     <style>
-        :root {
-            --wa-bg: #0b141a;
-            --wa-panel-bg: #111b21;
-            --wa-header-bg: #202c33;
-            --wa-text-main: #e9edef;
-            --wa-text-sub: #8696a0;
-            --wa-green: #00a884;
-            --wa-input-bg: #202c33;
-            --wa-border: #222e35;
-            --font-size-base: 16px;
-        }
+        :root { --wa-green: #00a884; --wa-bg: #111b21; --wa-text: #fff; }
+        body { background: var(--wa-bg); color: var(--wa-text); font-family: sans-serif; display: flex; justify-content: center; padding-top: 50px; }
+        .box { width: 350px; background: #202c33; padding: 20px; border-radius: 10px; }
+        .form-group { margin-bottom: 15px; }
+        input, select { width: 100%; padding: 10px; box-sizing: border-box; background: #2a3942; border: 1px solid #3d4a52; color: white; border-radius: 5px; }
+        
+        /* كلاسات اللون الأخضر عند النجاح */
+        .input-valid { border: 2px solid var(--wa-green) !important; }
+        .btn-ready { background-color: var(--wa-green) !important; color: white !important; cursor: pointer; }
+        
+        button { width: 100%; padding: 12px; margin-top: 10px; border: none; border-radius: 5px; background: #3d4a52; color: #8696a0; font-weight: bold; }
+    </style>
+</head>
+<body>
 
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #0c1317;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            color: var(--wa-text-main);
-            font-size: var(--font-size-base);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
+<div class="box">
+    <h2 id="title">تسجيل الدخول</h2>
+    
+    <div class="form-group">
+        <select id="method" onchange="updateUI()">
+            <option value="phone">رقم الهاتف فقط</option>
+            <option value="gmail">حساب الجيميل فقط</option>
+            <option value="both">الاثنين معاً</option>
+        </select>
+    </div>
 
-        /* صفحة تسجيل الدخول المتطورة */
-        .login-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--wa-bg);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            padding: 20px;
-            box-sizing: border-box;
-        }
+    <div class="form-group" id="p-group"><input type="text" id="phone" placeholder="رقم الهاتف" oninput="check()"></div>
+    <div class="form-group" id="g-group" style="display:none;"><input type="text" id="gmail" placeholder="حساب الجيميل" oninput="check()"></div>
 
-        .login-card {
-            width: 100%;
-            max-width: 420px;
-            background-color: var(--wa-panel-bg);
-            border-radius: 12px;
-            padding: 35px 25px;
-            box-sizing: border-box;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-            text-align: center;
-            border: 1px solid var(--wa-border);
-        }
+    <button id="btn" disabled>دخول</button>
+</div>
 
-        .login-logo {
-            font-size: 3.2em;
-            margin-bottom: 10px;
-        }
+<script>
+    function updateUI() {
+        let m = document.getElementById('method').value;
+        document.getElementById('p-group').style.display = (m === 'gmail') ? 'none' : 'block';
+        document.getElementById('g-group').style.display = (m === 'phone') ? 'none' : 'block';
+        document.getElementById('title').innerText = (m === 'both') ? "بيانات الدخول كاملة" : "تسجيل الدخول";
+        check();
+    }
 
-        .login-card h2 {
-            margin: 0 0 5px 0;
-            color: var(--wa-text-main);
-            font-weight: 600;
-            font-size: 1.5em;
-        }
+    function check() {
+        let m = document.getElementById('method').value;
+        let p = document.getElementById('phone');
+        let g = document.getElementById('gmail');
+        let btn = document.getElementById('btn');
+        
+        let pValid = (p.value.length === 11);
+        let gValid = (g.value.includes('@'));
 
-        .login-card p {
-            color: var(--wa-text-sub);
-            font-size: 0.85em;
-            margin-bottom: 20px;
-        }
+        // تلوين الخانات
+        if(p.parentElement.style.display !== 'none') p.className = pValid ? 'input-valid' : '';
+        if(g.parentElement.style.display !== 'none') g.className = gValid ? 'input-valid' : '';
 
-        /* واجهة التطبيق الرئيسية */
-        .app-window {
-            display: none; 
-            width: 100%;
-            height: 100%;
-            background-color: var(--wa-panel-bg);
-            overflow: hidden;
-            position: relative;
+        // منطق الزرار
+        let ok = (m === 'phone') ? pValid : (m === 'gmail') ? gValid : (pValid && gValid);
+        
+        if(ok) {
+            btn.className = 'btn-ready';
+            btn.disabled = false;
+        } else {
+            btn.className = '';
+            btn.disabled = true;
         }
+    }
+</script>
 
-        .side-panel {
-            width: 35%;
-            min-width: 320px;
-            max-width: 400px;
-            border-left: 1px solid var(--wa-border);
-            display: flex;
-            flex-direction: column;
-            background-color: var(--wa-panel-bg);
-            height: 100%;
-        }
-
-        .side-header {
-            background-color: var(--wa-header-bg);
-            height: 60px;
-            padding: 0 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-sizing: border-box;
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            background-color: #005c4b;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            color: #fff;
-        }
-
-        .header-icons button {
-            background: none;
-            border: none;
-            color: var(--wa-text-sub);
-            font-size: 1.2em;
-            cursor: pointer;
-            outline: none;
-            margin-right: 8px;
-        }
-
-        #pwa-install-btn {
-            background-color: var(--wa-green);
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.8em;
-            cursor: pointer;
-            display: none;
-            font-weight: bold;
-        }
-
-        .tabs-menu {
-            display: flex;
-            background-color: var(--wa-panel-bg);
-            border-bottom: 1px solid var(--wa-border);
-        }
-
-        .tab-item-btn {
-            flex: 1;
-            padding: 12px;
-            background: none;
-            border: none;
-            color: var(--wa-text-sub);
-            cursor: pointer;
-            font-size: 0.9em;
-            text-align: center;
-            border-bottom: 3px solid transparent;
-        }
-
-        .tab-item-btn.active {
-            color: var(--wa-green);
-            border-bottom: 3px solid var(--wa-green);
-        }
-
-        .chat-list {
-            flex: 1;
-            overflow-y: auto;
-        }
-
-        .chat-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 16px;
-            gap: 12px;
-            cursor: pointer;
-            border-bottom: 1px solid rgba(34, 46, 53, 0.4);
-        }
-
-        .chat-item:hover {
-            background-color: var(--wa-header-bg);
-        }
-
-        .chat-avatar {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background-color: #51595e;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.1em;
-            flex-shrink: 0;
-        }
-
-        .chat-info {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            overflow: hidden;
-        }
-
-        .chat-title-row h3 {
-            margin: 0;
-            font-size: 0.95em;
-            font-weight: normal;
-        }
-
-        .chat-preview {
-            font-size: 0.85em;
-            color: var(--wa-text-sub);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .main-view {
-            flex: 1;
-            background-color: #222e35;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            height: 100%;
-        }
-
-        .tool-screen {
-            width: 100%;
-            max-width: 500px;
-            padding: 30px;
-            box-sizing: border-box;
-            background-color: var(--wa-panel-bg);
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-            text-align: right;
-        }
-
-        .form-group label {
-            display: block;
-            color: var(--wa-text-sub);
-            font-size: 0.9em;
-            margin-bottom: 8px;
-        }
-
-        .input-with-button {
-            display: flex;
-            align-items: center;
-            background-color: var(--wa-input-bg);
-            border-radius: 6px;
-            padding: 0 12px;
-            border: 1px solid var(--wa-border);
-        }
-
-        .input-with-button button {
-            background: none;
-            border: none;
-            font-size: 1.3em;
-            cursor: pointer;
-            padding: 0 5px;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--wa-input-bg);
-            color: var(--wa-text-main);
-            border: 1px solid var(--wa-border);
-            border-radius: 6px;
-            font-size: 1em;
-            outline: none;
-            box-sizing: border-box;
-        }
-
-        .input-with-button input {
-            border: none;
-            background: none;
-            padding: 12px 8px;
-        }
-
-        .action-btn {
-            width: 100%;
-            padding: 12px;
-            background-color: #222e35; /* يبدأ باهت */
-            color: var(--wa-text-sub);
-            border: none;
-            border-radius: 6px;
-            font-size: 1em;
-            font-weight: bold;
-            cursor: not-allowed;
-            margin-top: 8px;
-            transition: all 0.3s ease;
-            opacity: 0.6;
-        }
-
-        /* الحالة النشطة للزرار لما الشروط تكتمل ويقلب أخضر واتساب */
-        .action-btn.ready-to-go {
-            background-color: var(--wa-green) !important;
-            color: #ffffff !important;
-            cursor: pointer !important;
-            opacity: 1 !important;
-            box-shadow: 0 4px 10px rgba(0, 168, 132, 0.4);
-        }
-
-        /* لوحة الشات النشط */
-        .chat-window-panel {
-            width: 100%;
-            height: 100%;
-            display: none;
-            flex-direction: column;
-            background-color: #0b141a;
-        }
-
-        .chat-window-header {
-            background-color: var(--wa-header-bg);
-            height: 60px;
-            padding: 0 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid var(--wa-border);
-        }
-
-        .chat-window-body {
-            flex: 1;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
-        }
-
-        /* صندوق الإيموجي */
-        .emoji-picker-popup {
-            position: absolute;
-            bottom: 75px;
-            right: 30px;
-            background-color: var(--wa-header-bg);
-            border: 1px solid var(--wa-border);
-            border-radius: 8px;
-            padding: 10px;
-            display: none;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 8px;
-            z-index: 1000;
-        }
-
-        .emoji-item {
-            font-size: 1.4em;
-            cursor: pointer;
-            text-align: center;
-        }
-
-        /* القوائم الجانبية */
-        .content-panel {
-            width: 100%;
-            height: 100%;
-            background-color: #1f2c34;
-            display: none;
-            flex-direction: column;
-        }
-
-        .panel-header {
-            background-color: var(--wa-header-bg);
-            height: 60px;
-            padding: 0 24px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            font-size: 1.1em;
-            font-weight: bold;
-        }
-
-        .back-arrow {
-            background: none;
-            border: none;
-            color: var(--wa-text-main);
-            font-size: 1.4em;
-            cursor: pointer;
-            outline: none;
-        }
-
-        .panel-body {
-            flex: 1;
-            padding: 25px 40px;
-            overflow-y: auto;
-        }
-
-        @media (max-width: 768px) {
-            .side-panel { width: 100%; position: absolute; left: 0; top: 0; z-index: 10; }
-            .main-view { width: 10
+</body>
+</html>
