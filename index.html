@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhatsApp Web</title>
+    <title>WhatsApp Web Pro</title>
     <style>
         :root {
             --wa-bg: #0b141a;
@@ -32,7 +32,6 @@
             overflow: hidden;
         }
 
-        /* حاوية التطبيق الكبيرة المضمونة */
         .app-window {
             display: flex;
             width: 100%;
@@ -42,7 +41,7 @@
         }
 
         /* ----------------------------------------- */
-        /* الجانب الأيمن: القائمة الجانبية (الشات والبحث) */
+        /* الجانب الأيمن: القائمة الجانبية (الأشخاص المحفوظين) */
         /* ----------------------------------------- */
         .side-panel {
             width: 35%;
@@ -58,7 +57,6 @@
         .side-header {
             background-color: var(--wa-header-bg);
             height: 60px;
-            min-height: 60px;
             padding: 0 16px;
             display: flex;
             align-items: center;
@@ -85,27 +83,14 @@
             font-size: 1.2em;
             cursor: pointer;
             outline: none;
+            margin-right: 10px;
         }
 
-        .search-container {
-            padding: 8px 12px;
-            background-color: var(--wa-panel-bg);
-            border-bottom: 1px solid var(--wa-border);
-        }
-
-        .search-box {
-            background-color: var(--wa-input-bg);
-            border-radius: 8px;
-            padding: 6px 12px;
-        }
-
-        .search-box input {
-            background: none;
-            border: none;
-            color: var(--wa-text-main);
-            width: 100%;
-            outline: none;
+        .chat-list-title {
+            padding: 15px 16px 5px 16px;
+            color: var(--wa-green);
             font-size: 0.9em;
+            font-weight: bold;
         }
 
         .chat-list {
@@ -122,7 +107,7 @@
             border-bottom: 1px solid rgba(34, 46, 53, 0.4);
         }
 
-        .chat-item:hover, .chat-item.active {
+        .chat-item:hover {
             background-color: var(--wa-header-bg);
         }
 
@@ -146,33 +131,19 @@
             overflow: hidden;
         }
 
-        .chat-title-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
         .chat-title-row h3 {
             margin: 0;
             font-size: 0.95em;
             font-weight: normal;
         }
 
-        .chat-time {
-            font-size: 0.75em;
-            color: var(--wa-text-sub);
-        }
-
         .chat-preview {
             font-size: 0.85em;
             color: var(--wa-text-sub);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         /* ----------------------------------------- */
-        /* الجانب الأيسر الكبيير: مساحة العرض الرئيسية */
+        /* الجانب الأيسر الكبيير: الأدوات والادوات والقرى */
         /* ----------------------------------------- */
         .main-view {
             flex: 1;
@@ -184,35 +155,96 @@
             height: 100%;
         }
 
-        .welcome-screen {
+        /* شاشة الأدوات الرئيسية في البداية */
+        .tool-screen {
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+            box-sizing: border-box;
+            background-color: var(--wa-panel-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .tool-screen h2 {
+            margin-top: 0;
+            color: var(--wa-green);
             text-align: center;
-            max-width: 460px;
-            padding: 20px;
+            font-weight: 300;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--wa-text-sub);
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+
+        .phone-input-container {
             display: flex;
-            flex-direction: column;
             align-items: center;
+            background-color: var(--wa-input-bg);
+            border-radius: 6px;
+            padding: 0 12px;
+            border: 1px solid var(--wa-border);
+        }
+
+        .phone-prefix {
+            color: var(--wa-text-sub);
+            font-size: 1em;
+            padding-left: 8px;
+            border-left: 1px solid var(--wa-border);
+            user-select: none;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--wa-input-bg);
+            color: var(--wa-text-main);
+            border: 1px solid var(--wa-border);
+            border-radius: 6px;
+            font-size: 1em;
+            outline: none;
             box-sizing: border-box;
         }
 
-        .welcome-logo {
-            font-size: 5em;
-            margin-bottom: 15px;
+        .phone-input-container input {
+            border: none;
+            background: none;
+            padding: 12px 8px;
         }
 
-        .welcome-screen h1 {
-            font-size: 1.8em;
-            font-weight: 300;
-            margin: 10px 0;
+        textarea {
+            resize: none;
+            height: 80px;
         }
 
-        .welcome-screen p {
-            font-size: 0.9em;
-            color: var(--wa-text-sub);
-            line-height: 1.6;
-            margin: 10px 0;
+        .action-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--wa-green);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 8px;
         }
 
-        .settings-screen {
+        .action-btn:hover {
+            background-color: #008f72;
+        }
+
+        /* شاشات الإعدادات الفرعية */
+        .content-panel {
             width: 100%;
             height: 100%;
             background-color: #1f2c34;
@@ -220,7 +252,7 @@
             flex-direction: column;
         }
 
-        .settings-header {
+        .panel-header {
             background-color: var(--wa-header-bg);
             height: 60px;
             padding: 0 24px;
@@ -240,33 +272,18 @@
             outline: none;
         }
 
-        .settings-body {
+        .panel-body {
             flex: 1;
-            padding: 25px 30px;
+            padding: 25px 40px;
             overflow-y: auto;
         }
 
-        .settings-group {
-            margin-bottom: 20px;
-        }
-
-        .settings-group label {
-            display: block;
-            color: var(--wa-green);
-            font-size: 0.9em;
-            margin-bottom: 10px;
-        }
-
-        select {
-            width: 100%;
-            padding: 12px;
+        .info-card {
             background-color: var(--wa-panel-bg);
-            color: var(--wa-text-main);
-            border: 1px solid var(--wa-border);
-            border-radius: 6px;
-            font-size: 1em;
-            outline: none;
-            cursor: pointer;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            line-height: 1.6;
         }
     </style>
 </head>
@@ -278,36 +295,18 @@
             <div class="side-header">
                 <div class="user-avatar">ع</div>
                 <div class="header-icons">
-                    <button onclick="showSettingsPage()" title="الإعدادات">⚙️</button>
+                    <button onclick="showPanel('add-person-panel')" title="إضافة شخص جديد">👤➕</button>
+                    <button onclick="showPanel('settings-panel')" title="الإعدادات">⚙️</button>
                 </div>
             </div>
             
-            <div class="search-container">
-                <div class="search-box">
-                    <input type="text" placeholder="البحث أو بدء دردشة جديدة" disabled>
-                </div>
-            </div>
-
-            <div class="chat-list">
-                <div class="chat-item active" id="item-welcome" onclick="showWelcomePage()">
-                    <div class="chat-avatar" style="background-color: #00a884;">💻</div>
+            <div class="chat-list-title">الأشخاص وحفظ الأرقام السريعة</div>
+            <div class="chat-list" id="saved-contacts-list">
+                <div class="chat-item" style="cursor: default; opacity: 0.6;">
+                    <div class="chat-avatar">📱</div>
                     <div class="chat-info">
-                        <div class="chat-title-row">
-                            <h3>واتساب ويب</h3>
-                            <span class="chat-time">الآن</span>
-                        </div>
-                        <span class="chat-preview">البرنامج شغال رسمي 100%...</span>
-                    </div>
-                </div>
-
-                <div class="chat-item" id="item-settings" onclick="showSettingsPage()">
-                    <div class="chat-avatar" style="background-color: #202c33;">⚙️</div>
-                    <div class="chat-info">
-                        <div class="chat-title-row">
-                            <h3>إعدادات المظهر والخط</h3>
-                            <span class="chat-time">١٢:٠٠ م</span>
-                        </div>
-                        <span class="chat-preview">اضغط لتعديل الألوان والخطوط...</span>
+                        <div class="chat-title-row"><h3>لا يوجد أشخاص مضافين</h3></div>
+                        <span class="chat-preview">اضغط على أيقونة الإضافة فوق لحفظ رقم سريع...</span>
                     </div>
                 </div>
             </div>
@@ -315,34 +314,109 @@
 
         <div class="main-view" id="main-view-bg">
             
-            <div class="welcome-screen" id="welcome-view">
-                <div class="welcome-logo">📱</div>
-                <h1>واتساب للكمبيوتر</h1>
-                <p>أرسل واستقبل الرسائل دون الحاجة لإبقاء هاتفك متصلاً بالإنترنت.</p>
-                <p style="color: var(--wa-text-sub); font-size: 0.8em; margin-top: 30px;">🔒 مشفر بين الطرفين</p>
+            <div class="tool-screen" id="main-tool-screen">
+                <h2>بدء دردشة سريعة 💬</h2>
+                
+                <div class="form-group">
+                    <label>أدخل رقم الهاتف (رقم الموبايل المصري بدون 002 أو +):</label>
+                    <div class="phone-input-container">
+                        <span class="phone-prefix">+20</span>
+                        <input type="text" id="quick-phone" placeholder="مثال: 1012345678">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>نص الرسالة (اختياري):</label>
+                    <textarea id="quick-message" placeholder="اكتب رسالتك الافتتاحية هنا..."></textarea>
+                </div>
+
+                <button class="action-btn" onclick="openQuickChat()">فتح الشات في الواتساب 🚀</button>
+                <button class="action-btn" onclick="openBulkChat()" style="background-color: #202c33; margin-top: 12px; border: 1px solid var(--wa-border);">إرسال مكثف لعدة أرقام ⚡</button>
             </div>
 
-            <div class="settings-screen" id="settings-view">
-                <div class="settings-header">
-                    <button class="back-arrow" onclick="showWelcomePage()">➔</button>
-                    <span>الإعدادات</span>
+            <div class="content-panel" id="settings-panel">
+                <div class="panel-header">
+                    <button class="back-arrow" onclick="closeAllPanels()">➔</button>
+                    <span>الإعدادات العملاقة ⚙️</span>
                 </div>
-                <div class="settings-body">
-                    <div class="settings-group">
-                        <label>المظهر المفضل (Theme):</label>
+                <div class="panel-body">
+                    
+                    <div class="form-group">
+                        <label style="color: var(--wa-green);">تخصيص المظهر (Theme):</label>
                         <select id="theme-select" onchange="changeTheme()">
                             <option value="dark">الوضع الداكن (WhatsApp Dark)</option>
                             <option value="light">الوضع الفاتح (WhatsApp Light)</option>
                         </select>
                     </div>
-                    <div class="settings-group">
-                        <label>حجم الخط (Font Size):</label>
+
+                    <div class="form-group">
+                        <label style="color: var(--wa-green);">حجم الخط (Font Size):</label>
                         <select id="font-size-select" onchange="changeFontSize()">
                             <option value="16px">افتراضي (متوسط)</option>
                             <option value="14px">صغير</option>
                             <option value="19px">كبير</option>
                             <option value="22px">كبير جداً</option>
                         </select>
+                    </div>
+
+                    <div class="info-card" onclick="showPanel('about-developer-panel')" style="cursor: pointer; background: var(--wa-header-bg);">
+                        <strong style="color: #fff;">ℹ️ عن المطور</strong>
+                        <div style="color: var(--wa-text-sub); font-size: 0.85em;">اضغط لمعرفة معلومات المبرمج...</div>
+                    </div>
+
+                    <div class="info-card" onclick="showPanel('about-us-panel')" style="cursor: pointer; background: var(--wa-header-bg);">
+                        <strong style="color: #fff;">👥 من نحن</strong>
+                        <div style="color: var(--wa-text-sub); font-size: 0.85em;">معلومات وتفاصيل حول أداة الويب...</div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="content-panel" id="add-person-panel">
+                <div class="panel-header">
+                    <button class="back-arrow" onclick="closeAllPanels()">➔</button>
+                    <span>إضافة شخص جديد 👤➕</span>
+                </div>
+                <div class="panel-body" style="max-width: 500px;">
+                    <div class="form-group">
+                        <label>اسم الشخص:</label>
+                        <input type="text" id="contact-name" placeholder="مثال: علي رضوان">
+                    </div>
+                    <div class="form-group">
+                        <label>رقم الموبايل (بدول رمز الدولة):</label>
+                        <div class="phone-input-container">
+                            <span class="phone-prefix">+20</span>
+                            <input type="text" id="contact-phone" placeholder="مثال: 1234567890">
+                        </div>
+                    </div>
+                    <button class="action-btn" onclick="saveNewContact()">حفظ وتثبيت في القائمة الجانبية</button>
+                </div>
+            </div>
+
+            <div class="content-panel" id="about-developer-panel">
+                <div class="panel-header">
+                    <button class="back-arrow" onclick="showPanel('settings-panel')">➔</button>
+                    <span>عن المطور 💻</span>
+                </div>
+                <div class="panel-body">
+                    <div class="info-card" style="text-align: center;">
+                        <div class="user-avatar" style="width: 70px; height: 70px; font-size: 2em; margin: 0 auto 15px auto;">ع</div>
+                        <h3 style="margin: 5px 0;">المطور البشمهندس علي</h3>
+                        <p style="color: var(--wa-text-sub);">مبرمج ومطور تطبيقات ويب صاعد ذو رؤية برمجية متميزة.</p>
+                        <p>تم تصميم وهندسة هذا التطبيق بالكامل تحت إشراف وتوجيهات علي ليكون أداة مساعدة فائقة السرعة ومتكاملة لرواد تطبيق واتساب.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-panel" id="about-us-panel">
+                <div class="panel-header">
+                    <button class="back-arrow" onclick="showPanel('settings-panel')">➔</button>
+                    <span>من نحن 👥</span>
+                </div>
+                <div class="panel-body">
+                    <div class="info-card">
+                        <h3>منصة WhatsApp Web Pro</h3>
+                        <p>هي أداة ويب مساعدة متطورة تهدف إلى تسهيل المراسلة الفورية اليومية. تتيح للمستخدمين فتح غرف شات فورية للأرقام غير المسجلة لتوفير الوقت والجهد، بالإضافة إلى إدارة القوائم السريعة وتخصيص تجربة العرض المرئية بالكامل وبشكل آمن تماماً.</p>
                     </div>
                 </div>
             </div>
@@ -352,65 +426,26 @@
     </div>
 
     <script>
-        function showSettingsPage() {
-            document.getElementById('welcome-view').style.display = 'none';
-            document.getElementById('settings-view').style.display = 'flex';
-            document.getElementById('item-welcome').classList.remove('active');
-            document.getElementById('item-settings').classList.add('active');
+        // فتح لوحة فرعية معينة وإخفاء الباقي
+        function showPanel(panelId) {
+            closeAllPanels();
+            document.getElementById('main-tool-screen').style.display = 'none';
+            document.getElementById(panelId).style.display = 'flex';
         }
 
-        function showWelcomePage() {
-            document.getElementById('settings-view').style.display = 'none';
-            document.getElementById('welcome-view').style.display = 'flex';
-            document.getElementById('item-settings').classList.remove('active');
-            document.getElementById('item-welcome').classList.add('active');
+        // إغلاق كل اللوحات والعودة للشاشة الرئيسية
+        function closeAllPanels() {
+            document.querySelectorAll('.content-panel').forEach(panel => panel.style.display = 'none');
+            document.getElementById('main-tool-screen').style.display = 'block';
         }
 
-        function changeTheme() {
-            let theme = document.getElementById('theme-select').value;
-            localStorage.setItem('appTheme', theme);
-            applyTheme(theme);
-        }
-
-        function applyTheme(theme) {
-            let mainBg = document.getElementById('main-view-bg');
-            if (theme === 'light') {
-                document.documentElement.style.setProperty('--wa-bg', '#eae6df');
-                document.documentElement.style.setProperty('--wa-panel-bg', '#ffffff');
-                document.documentElement.style.setProperty('--wa-header-bg', '#f0f2f5');
-                document.documentElement.style.setProperty('--wa-text-main', '#111b21');
-                document.documentElement.style.setProperty('--wa-text-sub', '#667781');
-                document.documentElement.style.setProperty('--wa-input-bg', '#f0f2f5');
-                document.documentElement.style.setProperty('--wa-border', '#e1e9eb');
-                if(mainBg) mainBg.style.backgroundColor = '#f8f9fa';
-            } else {
-                document.documentElement.style.setProperty('--wa-bg', '#0b141a');
-                document.documentElement.style.setProperty('--wa-panel-bg', '#111b21');
-                document.documentElement.style.setProperty('--wa-header-bg', '#202c33');
-                document.documentElement.style.setProperty('--wa-text-main', '#e9edef');
-                document.documentElement.style.setProperty('--wa-text-sub', '#8696a0');
-                document.documentElement.style.setProperty('--wa-input-bg', '#202c33');
-                document.documentElement.style.setProperty('--wa-border', '#222e35');
-                if(mainBg) mainBg.style.backgroundColor = '#222e35';
-            }
-        }
-
-        function changeFontSize() {
-            let size = document.getElementById('font-size-select').value;
-            localStorage.setItem('appFontSize', size);
-            document.documentElement.style.setProperty('--font-size-base', size);
-        }
-
-        window.onload = function() {
-            let savedTheme = localStorage.getItem('appTheme') || 'dark';
-            let savedSize = localStorage.getItem('appFontSize') || '16px';
+        // فتح شات سريع (يضيف 20 تلقائياً للرقم المصري)
+        function openQuickChat() {
+            let phoneInput = document.getElementById('quick-phone').value.trim().replace(/[^0-9]/g, "");
+            let message = document.getElementById('quick-message').value.trim();
             
-            document.getElementById('theme-select').value = savedTheme;
-            document.getElementById('font-size-select').value = savedSize;
+            if(!phoneInput) { alert("من فضلك اكتب الرقم أولاً!"); return; }
             
-            applyTheme(savedTheme);
-            document.documentElement.style.setProperty('--font-size-base', savedSize);
-        }
-    </script>
-</body>
-</html>
+            // إضافة رمز مصر تلقائياً إذا شال الصفر أو حطه
+            if(phoneInput.startsWith("0")) { phoneInput = phoneInput.substring(1); }
+            let fullPhone = "20" + phoneInput
