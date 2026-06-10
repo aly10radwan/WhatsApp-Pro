@@ -3,114 +3,399 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhatsApp Pro</title>
+    <title>WhatsApp Pro Hub</title>
     <style>
+        :root {
+            --wa-header: #00a884; /* لون الهيدر الافتراضي */
+            --wa-bg: #0b141a; /* لون الخلفية الافتراضي داكن */
+            --wa-container: #111b21;
+            --wa-text: #e9edef;
+            --wa-input: #2a3942;
+            --wa-button: #00a884;
+            --wa-button-hover: #008f72;
+            --wa-label: #8696a0;
+            --font-size-base: 16px;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #0b141a;
-            color: #e9edef;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--wa-bg);
+            color: var(--wa-text);
+            margin: 0;
+            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             min-height: 100vh;
-            margin: 0;
-        }
-        .container {
-            text-align: center;
-            background-color: #111b21;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            width: 90%;
-            max-width: 400px;
-        }
-        h1 {
-            color: #00a884;
-            margin-bottom: 20px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-            text-align: right;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #8696a0;
-            font-size: 14px;
-        }
-        input, textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #222e35;
-            border-radius: 8px;
-            background-color: #2a3942;
-            color: #fff;
+            font-size: var(--font-size-base);
             box-sizing: border-box;
-            font-size: 16px;
         }
-        textarea {
-            resize: none;
-            height: 100px;
-        }
-        button {
+
+        /* الهيدر العلوي يشبه الواتساب تماماً */
+        .header {
             width: 100%;
-            padding: 12px;
-            background-color: #00a884;
-            color: #fff;
+            background-color: var(--wa-header);
+            color: #ffffff;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-sizing: border-box;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* أزرار التنقل (التبويبات) شبه نظام الواتساب */
+        .tabs {
+            display: flex;
+            width: 100%;
+            max-width: 500px;
+            background-color: var(--wa-header);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: none;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 15px 5px;
+            font-size: 0.95em;
             font-weight: bold;
             cursor: pointer;
-            transition: background 0.3s;
+            text-align: center;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
         }
-        button:hover {
-            background-color: #008f72;
+
+        .tab-btn.active {
+            color: #ffffff;
+            border-bottom: 3px solid #ffffff;
+        }
+
+        /* حاوية المحتوى الرئيسية */
+        .main-content {
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+            box-sizing: border-box;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card {
+            background-color: var(--wa-container);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--wa-label);
+            font-size: 0.9em;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            background-color: var(--wa-input);
+            color: var(--wa-text);
+            box-sizing: border-box;
+            font-size: 1em;
+            outline: none;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--wa-header);
+        }
+
+        textarea {
+            resize: none;
+            height: 120px;
+        }
+
+        /* زر الإرسال الأخضر الدائري أو المربع المريح الخاص بالواتساب */
+        .action-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--wa-button);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: background 0.2s;
+        }
+
+        .action-btn:hover {
+            background-color: var(--wa-button-hover);
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* شاشة قفل الواتساب الرسمية (تسجيل الدخول) */
+        #login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--wa-bg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .lock-icon {
+            font-size: 3em;
+            color: var(--wa-header);
+            margin-bottom: 15px;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>WhatsApp Pro 🚀</h1>
+    <div id="login-screen">
+        <div class="lock-icon">🔒</div>
+        <h2 style="margin-bottom: 5px;">واتساب ويب محمي</h2>
+        <p style="color: var(--wa-label); font-size: 14px; margin-bottom: 25px;">أدخل كلمة المرور لفتح قفل التطبيق</p>
         
-        <div class="form-group">
-            <label for="phone">رقم الهاتف (مع رمز الدولة بدون + مثل 2010...):</label>
-            <input type="text" id="phone" placeholder="مثال: 201012345678">
+        <div style="width: 100%; max-width: 320px;">
+            <input type="password" id="login-pin" placeholder="أدخل رمز الدخول هنا" style="text-align: center; font-size: 1.2em; letter-spacing: 5px;" oninput="checkLogin()">
+            <p style="color: var(--wa-label); font-size: 11px; text-align: center; margin-top: 10px;">الرمز الافتراضي: 1234 (أو كود الطوارئ لمسح البيانات)</p>
+        </div>
+    </div>
+
+    <div id="app-structure" style="width: 100%; display: none;">
+        
+        <div class="header">
+            <div class="header-title">
+                <span>WhatsApp Pro Hub</span>
+            </div>
+            <div style="font-size: 14px; opacity: 0.9;" id="online-status">متصل الآن 🟢</div>
         </div>
 
-        <div class="form-group">
-            <label for="message">الرسالة (اختياري):</label>
-            <textarea id="message" placeholder="اكتب رسالتك هنا..."></textarea>
+        <div style="display: flex; justify-content: center; background-color: var(--wa-header);">
+            <div class="tabs">
+                <button class="tab-btn active" id="btn-single" onclick="switchTab('single')">دردشة سريعة</button>
+                <button class="tab-btn" id="btn-bulk" onclick="switchTab('bulk')">إرسال تلقائي</button>
+                <button class="tab-btn" id="btn-settings" onclick="switchTab('settings')">الإعدادات</button>
+            </div>
         </div>
 
-        <button onclick="sendWhatsApp()">إرسال عبر الواتساب السريع</button>
+        <div style="display: flex; justify-content: center;">
+            <div class="main-content">
+                
+                <div id="page-single" class="page active">
+                    <div class="card">
+                        <div class="form-group">
+                            <label>رقم هاتف المستلم (مع رمز الدولة وبدون +):</label>
+                            <input type="text" id="phone" placeholder="مثال: 201012345678">
+                        </div>
+                        <div class="form-group">
+                            <label>نص الرسالة:</label>
+                            <textarea id="message" placeholder="اكتب رسالتك هنا..."></textarea>
+                        </div>
+                        <button class="action-btn" onclick="sendWhatsApp()">مراسلة سريعة عبر واتساب</button>
+                    </div>
+                </div>
+
+                <div id="page-bulk" class="page">
+                    <div class="card">
+                        <div class="form-group">
+                            <label>قائمة الأرقام المستهدفة (كل رقم في سطر مستقل):</label>
+                            <textarea id="bulk-phones" placeholder="201012345678&#10;201112233445&#10;201211223344" style="height: 140px;"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>نص الرسالة الموحدة للجميع:</label>
+                            <textarea id="bulk-message" placeholder="اكتب نص الرسالة الجماعية هنا..."></textarea>
+                        </div>
+                        <button class="action-btn" onclick="startBulkSend()">بدء الإرسال التلقائي المكثف ⚡</button>
+                    </div>
+                </div>
+
+                <div id="page-settings" class="page">
+                    <div class="card">
+                        <h3 style="margin-top:0; color: var(--wa-header);">تخصيص المظهر</h3>
+                        <div class="form-group">
+                            <label>وضع الشاشة والألوان:</label>
+                            <select id="theme-select" onchange="changeTheme()">
+                                <option value="dark">الوضع الداكن الافتراضي (WhatsApp Dark)</option>
+                                <option value="light">الوضع الفاتح الرسمي (WhatsApp Light)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>حجم الخط داخل التطبيق:</label>
+                            <select id="font-size-select" onchange="changeFontSize()">
+                                <option value="16px">افتراضي</option>
+                                <option value="14px">صغير</option>
+                                <option value="19px">كبير</option>
+                                <option value="22px">كبير جداً</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="card" style="border: 1px solid #ea0038;">
+                        <h3 style="margin-top:0; color: #ea0038;">🚨 نظام الأمان (كود الطوارئ)</h3>
+                        <div class="form-group">
+                            <label>تفعيل رمز الطوارئ (Panic Code):</label>
+                            <input type="password" id="panic-code-input" placeholder="اكتب الرمز السري الفوري هنا">
+                            <p style="color: var(--wa-label); font-size: 12px; margin-top: 6px; line-height: 1.4;">بمجرد كتابة هذا الرمز في شاشة القفل الخارجية، سيتم على الفور تدمير ومسح كافة البيانات والأرقام والرسائل المخزنة على المتصفح لحفظ خصوصيتك.</p>
+                        </div>
+                        <button class="action-btn" onclick="savePanicCode()" style="background-color: #ea0038;">حفظ وتثبيت كود الطوارئ</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
     </div>
 
     <script>
-        function sendWhatsApp() {
-            var phone = document.getElementById('phone').value.trim();
-            var message = document.getElementById('message').value.trim();
+        let appPassword = "1234"; // الرقم السري للدخول الافتراضي
 
-            if (phone === "") {
-                alert("من فضلك أدخل رقم الهاتف أولاً!");
+        // فحص كلمة السر تلقائياً بدون زرار أو رسائل SMS
+        function checkLogin() {
+            let inputPin = document.getElementById('login-pin').value;
+            let savedPanic = localStorage.getItem('panicCode');
+
+            // 1. فحص كود الطوارئ أولاً للتدمير الذاتي للمعلومات
+            if (savedPanic && inputPin === savedPanic) {
+                localStorage.clear();
+                alert("🚨 تم تفعيل نظام الطوارئ بنجاح! تم مسح كافة البيانات والإعدادات والقوائم فوراً لحمايتك.");
+                location.reload();
                 return;
             }
 
-            // تنظيف الرقم من أي مسافات أو علامة +
-            phone = phone.replace(/[^0-9]/g, "");
-
-            // إنشاء رابط الواتساب الرسمي
-            var url = "https://api.whatsapp.com/send?phone=" + phone;
-            if (message !== "") {
-                url += "&text=" + encodeURIComponent(message);
+            // 2. فحص الرقم السري العادي للدخول للتطبيق
+            if (inputPin === appPassword) {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('app-structure').style.display = 'block';
+                loadSettings(); // تطبيق ثيم الألوان والخطوط المختار
             }
+        }
 
-            // فتح الرابط في تابة جديدة ليفتح تطبيق الواتساب
+        // التنقل السلس بين التبويبات بطريقة الواتساب
+        function switchTab(tabName) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById('page-' + tabName).classList.add('active');
+            document.getElementById('btn-' + tabName).classList.add('active');
+        }
+
+        // مراسلة رقم واحد سريع
+        function sendWhatsApp() {
+            let phone = document.getElementById('phone').value.trim().replace(/[^0-9]/g, "");
+            let message = document.getElementById('message').value.trim();
+            if(!phone) { alert("يرجى إدخال رقم الهاتف أولاً!"); return; }
+            
+            let url = "https://api.whatsapp.com/send?phone=" + phone;
+            if(message) url += "&text=" + encodeURIComponent(message);
             window.open(url, '_blank');
         }
-    </script>
 
-</body>
-</html>
+        // الإرسال التلقائي المكثف لعدد غير محدود
+        function startBulkSend() {
+            let text = document.getElementById('bulk-phones').value.trim();
+            let msg = document.getElementById('bulk-message').value.trim();
+            if(!text) { alert("من فضلك أضف الأرقام المستهدفة أولاً!"); return; }
+
+            let phones = text.split('\n').map(p => p.replace(/[^0-9]/g, "")).filter(p => p !== "");
+            
+            alert(`جاري تشغيل نظام الإرسال التلقائي المتتابع لعدد (${phones.length}) مستلم.`);
+            
+            phones.forEach((phone, index) => {
+                setTimeout(() => {
+                    let url = "https://api.whatsapp.com/send?phone=" + phone;
+                    if(msg) url += "&text=" + encodeURIComponent(msg);
+                    window.open(url, '_blank');
+                }, index * 1200); // فاصل زمني ثانية وربع لحماية استقرار المتصفح
+            });
+        }
+
+        // حفظ كود الطوارئ السرّي في المتصفح
+        function savePanicCode() {
+            let code = document.getElementById('panic-code-input').value.trim();
+            if(code) {
+                localStorage.setItem('panicCode', code);
+                alert("🔒 تم تشفير وحفظ رمز الطوارئ الخاص بك بنجاح.");
+            } else {
+                alert("يرجى إدخال الرمز أولاً!");
+            }
+        }
+
+        // تغيير مظهر الألوان (Theme) الرسمي للواتساب
+        function changeTheme() {
+            let theme = document.getElementById('theme-select').value;
+            localStorage.setItem('appTheme', theme);
+            applyTheme(theme);
+        }
+
+        function applyTheme(theme) {
+            if (theme === 'light') {
+                // ثيم الواتساب الفاتح الرسمي
+                document.documentElement.style.setProperty('--wa-bg', '#f0f2f5');
+                document.documentElement.style.setProperty('--wa-container', '#ffffff');
+                document.documentElement.style.setProperty('--wa-text', '#111b21');
+                document.documentElement.style.setProperty('--wa-input', '#f0f2f5');
+                document.documentElement.style.setProperty('--wa-label', '#667781');
+                document.documentElement.style.setProperty('--wa-header', '#008069'); // لون الهيدر الأخضر في الويب الفاتح
+            } else {
+                // ثيم الواتساب الداكن الاحترافي الأصلي
+                document.documentElement.style.setProperty('--wa-bg', '#0b141a');
+                document.documentElement.style.setProperty('--wa-container', '#111b21');
+                document.documentElement.style.setProperty('--wa-text', '#e9edef');
+                document.documentElement.style.setProperty('--wa-input', '#2a3942');
+                document.documentElement.style.setProperty('--wa-label', '#8696a0');
+                document.documentElement.style.setProperty('--wa-header', '#00a884');
+            }
+        }
+
+        // تحجيم خطوط التطبيق
+        function changeFontSize() {
+            let size = document.getElementById('font-size-select').value;
+            localStorage.setItem('appFontSize', size);
+            document.documentElement.style.setProperty('--font-size-base', size);
+        }
+
+        // تحميل الإعدادات عند فك قفل التطبيق
+        function loadSettings() {
+            let savedTheme = localStorage.getItem('appTheme') || 'dark';
+            let savedSize = localStorage.getItem('appFontSize') || '16px';
+            
+            document.getElementById('theme-select').value = savedTheme;
+            document.getElementById('font-size-select').value = saved
