@@ -38,7 +38,7 @@
             overflow: hidden;
         }
 
-        /* صفحة تسجيل الدخول */
+        /* صفحة تسجيل الدخول المتطورة */
         .login-container {
             position: fixed;
             top: 0;
@@ -56,10 +56,10 @@
 
         .login-card {
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
             background-color: var(--wa-panel-bg);
             border-radius: 12px;
-            padding: 40px 30px;
+            padding: 35px 25px;
             box-sizing: border-box;
             box-shadow: 0 8px 24px rgba(0,0,0,0.5);
             text-align: center;
@@ -67,12 +67,12 @@
         }
 
         .login-logo {
-            font-size: 3.5em;
-            margin-bottom: 15px;
+            font-size: 3.2em;
+            margin-bottom: 10px;
         }
 
         .login-card h2 {
-            margin: 0 0 10px 0;
+            margin: 0 0 5px 0;
             color: var(--wa-text-main);
             font-weight: 600;
             font-size: 1.5em;
@@ -80,8 +80,8 @@
 
         .login-card p {
             color: var(--wa-text-sub);
-            font-size: 0.9em;
-            margin-bottom: 25px;
+            font-size: 0.85em;
+            margin-bottom: 20px;
         }
 
         /* واجهة التطبيق الرئيسية */
@@ -245,7 +245,7 @@
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
             text-align: right;
         }
 
@@ -302,6 +302,14 @@
             font-weight: bold;
             cursor: pointer;
             margin-top: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:disabled {
+            background-color: #222e35 !important;
+            color: var(--wa-text-sub) !important;
+            cursor: not-allowed !important;
+            opacity: 0.6;
         }
 
         /* لوحة الشات النشط */
@@ -353,7 +361,7 @@
             text-align: center;
         }
 
-        /* القوائم الجانبية المفتوحة */
+        /* القوائم الجانبية */
         .content-panel {
             width: 100%;
             height: 100%;
@@ -389,20 +397,8 @@
         }
 
         @media (max-width: 768px) {
-            .side-panel {
-                width: 100%;
-                position: absolute;
-                left: 0;
-                top: 0;
-                z-index: 10;
-            }
-            .main-view {
-                width: 100%;
-                position: absolute;
-                left: 0;
-                top: 0;
-                z-index: 5;
-            }
+            .side-panel { width: 100%; position: absolute; left: 0; top: 0; z-index: 10; }
+            .main-view { width: 100%; position: absolute; left: 0; top: 0; z-index: 5; }
             .mobile-back-btn { display: block !important; }
         }
 
@@ -423,11 +419,28 @@
         <div class="login-card">
             <div class="login-logo">💬</div>
             <h2>WhatsApp Pro</h2>
-            <p>أدخل اسم المستخدم أو رقم الحساب للدخول فوراً</p>
+            <p>اختر طريقة تسجيل الدخول المفضلة لديك</p>
+            
             <div class="form-group">
-                <input type="text" id="login-identity" placeholder="اكتب اسم الحساب هنا (اختياري)..." style="text-align: center; font-size: 1.1em;">
+                <label>طريقة الدخول:</label>
+                <select id="login-method-select" onchange="toggleLoginFields()">
+                    <option value="phone">رقم الهاتف فقط 📱</option>
+                    <option value="gmail">حساب الجيميل فقط 📧</option>
+                    <option value="both">الاثنين معاً (الهاتف والجيميل) 🔗</option>
+                </select>
             </div>
-            <button class="action-btn" onclick="handleLogin()">دخول سريع 🔓</button>
+
+            <div class="form-group" id="login-phone-wrapper" style="display: block;">
+                <label>رقم الهاتف:</label>
+                <input type="text" id="login-phone-input" placeholder="اكتب 11 رقم (مثال: 01012345678)" oninput="validateLoginLogic()" style="text-align: center;">
+            </div>
+
+            <div class="form-group" id="login-gmail-wrapper" style="display: none;">
+                <label>حساب الجيميل أو الحساب الشخصي:</label>
+                <input type="text" id="login-gmail-input" placeholder="اكتب حسابك يحتوي على @" oninput="validateLoginLogic()" style="text-align: center; dir: ltr;">
+            </div>
+            
+            <button class="action-btn" id="login-submit-btn" onclick="handleLogin()" disabled>دخول سريع 🔓</button>
         </div>
     </div>
 
@@ -560,19 +573,67 @@
         let currentTab = 'all';
         let deferredPrompt;
 
+        // دالة إظهار وإخفاء الخانات بناءً على خيار المستخدم من القائمة
+        function toggleLoginFields() {
+            let method = document.getElementById('login-method-select').value;
+            let phoneWrapper = document.getElementById('login-phone-wrapper');
+            let gmailWrapper = document.getElementById('login-gmail-wrapper');
+
+            if (method === 'phone') {
+                phoneWrapper.style.display = 'block';
+                gmailWrapper.style.display = 'none';
+            } else if (method === 'gmail') {
+                phoneWrapper.style.display = 'none';
+                gmailWrapper.style.display = 'block';
+            } else if (method === 'both') {
+                phoneWrapper.style.display = 'block';
+                gmailWrapper.style.display = 'block';
+            }
+            // إعادة الفحص فور تغيير القائمة للتأكد من حالة الزرار
+            validateLoginLogic();
+        }
+
+        // دالة التحقق الذكي اللحظي بناءً على نوع الاختيار الحالي
+        function validateLoginLogic() {
+            let method = document.getElementById('login-method-select').value;
+            let phoneInput = document.getElementById('login-phone-input').value.trim();
+            let gmailInput = document.getElementById('login-gmail-input').value.trim();
+            let submitBtn = document.getElementById('login-submit-btn');
+
+            if (!submitBtn) return;
+
+            // شروط التحقق الفردية
+            let isPhoneValid = (phoneInput.replace(/[^0-9]/g, "").length === 11);
+            let isGmailValid = gmailInput.includes("@");
+
+            // تفعيل الزرار بناءً على الحالة المختارة
+            if (method === 'phone') {
+                submitBtn.disabled = !isPhoneValid;
+            } else if (method === 'gmail') {
+                submitBtn.disabled = !isGmailValid;
+            } else if (method === 'both') {
+                submitBtn.disabled = !(isPhoneValid && isGmailValid);
+            }
+        }
+
         function handleLogin() {
-            let inputEl = document.getElementById('login-identity');
-            let identity = inputEl ? inputEl.value.trim() : "";
-            if(!identity) identity = "زائر";
+            let method = document.getElementById('login-method-select').value;
+            let phoneInput = document.getElementById('login-phone-input').value.trim();
+            let gmailInput = document.getElementById('login-gmail-input').value.trim();
             
+            let displayName = "زائر";
+            if (method === 'phone' && phoneInput) displayName = phoneInput;
+            else if (method === 'gmail' && gmailInput) displayName = gmailInput;
+            else if (method === 'both' && phoneInput) displayName = phoneInput;
+
             let avatarEl = document.getElementById('global-user-avatar');
-            if(avatarEl) avatarEl.innerText = identity.charAt(0).toUpperCase();
+            if(avatarEl) avatarEl.innerText = displayName.charAt(0).toUpperCase();
 
             document.getElementById('auth-screen').style.display = 'none';
             document.getElementById('main-app-window').style.display = 'flex';
             
             sessionStorage.setItem('isLoggedIn', 'true');
-            sessionStorage.setItem('userAccountName', identity);
+            sessionStorage.setItem('userAccountName', displayName);
             loadContacts();
         }
 
@@ -665,3 +726,87 @@
             let name = nameEl.value.trim();
             let phone = phoneEl.value.trim().replace(/[^0-9]/g, "");
             if(!name || !phone) { alert("اكمل البيانات!"); return; }
+            if(phone.startsWith("0")) phone = phone.substring(1);
+
+            let contacts = JSON.parse(localStorage.getItem('waContacts') || "[]");
+            contacts.push({ name: name, phone: "20" + phone, archived: false, blocked: false });
+            localStorage.setItem('waContacts', JSON.stringify(contacts));
+
+            nameEl.value = "";
+            phoneEl.value = "";
+            alert("✅ تم الحفظ بنجاح!");
+            loadContacts();
+            hideAllPanels();
+        }
+
+        function loadContacts() {
+            let contacts = JSON.parse(localStorage.getItem('waContacts') || "[]");
+            let container = document.getElementById('saved-contacts-list');
+            if(!container) return;
+            container.innerHTML = "";
+
+            let filtered = contacts.filter((c, index) => {
+                c.originalIndex = index;
+                if (currentTab === 'archived') return c.archived && !c.blocked;
+                if (currentTab === 'blocked') return c.blocked;
+                return !c.archived && !c.blocked;
+            });
+
+            if(filtered.length === 0) {
+                container.innerHTML = `<div style="padding:20px; text-align:center; color:var(--wa-text-sub); font-size:0.85em;">لا يوجد عناصر هنا</div>`;
+                return;
+            }
+
+            filtered.forEach(c => {
+                let item = document.createElement('div');
+                item.className = "chat-item";
+                item.onclick = function() { openActiveChatWindow(c.originalIndex); };
+                item.innerHTML = `
+                    <div class="chat-avatar">${c.blocked ? '🚫' : '👤'}</div>
+                    <div class="chat-info">
+                        <div class="chat-title-row"><h3>${c.name}</h3></div>
+                        <span class="chat-preview">${c.blocked ? 'هذا الرقم محظور' : 'انقر لفتح المحادثة'}</span>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function openActiveChatWindow(index) {
+            selectedContactIndex = index;
+            let contacts = JSON.parse(localStorage.getItem('waContacts') || "[]");
+            let contact = contacts[index];
+
+            document.getElementById('main-tool-screen').style.display = 'none';
+            document.querySelectorAll('.content-panel').forEach(p => p.style.display = 'none');
+            
+            let chatWindow = document.getElementById('active-chat-window');
+            chatWindow.style.display = 'flex';
+
+            document.getElementById('active-chat-name').innerText = contact.name;
+            
+            if (window.innerWidth <= 768) {
+                document.getElementById('app-side-panel').style.zIndex = '1';
+            }
+
+            let statusText = document.getElementById('active-chat-status');
+            let blockBtn = document.getElementById('block-btn');
+            let archiveBtn = document.getElementById('archive-btn');
+
+            if(contact.blocked) {
+                statusText.innerText = "محظور 🚫";
+                statusText.style.color = "#ea0038";
+                blockBtn.innerText = "فك الحظر ✅";
+            } else {
+                statusText.innerText = "متصل الآن 🟢";
+                statusText.style.color = "var(--wa-green)";
+                blockBtn.innerText = "حظر 🚫";
+            }
+
+            archiveBtn.innerText = contact.archived ? "إلغاء الأرشفة 📤" : "أرشفة 📁";
+        }
+
+        function redirectActiveContact() {
+            let contacts = JSON.parse(localStorage.getItem('waContacts') || "[]");
+            let contact = contacts[selectedContactIndex];
+            if(contact
